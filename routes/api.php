@@ -60,7 +60,10 @@ Route::namespace('Api\v1\User')->prefix('1.0/user')->group(function () {
 
     Route::apiResources([
         'role' => 'RoleController',
-        'employee' => 'EmployeeController'
+        'employee' => 'EmployeeController',
+        'position' => 'PositionController',
+        'department' => 'DepartmentController',
+        'branch' => 'BranchController',
     ]);
 
 
@@ -76,6 +79,9 @@ Route::namespace('Api\v1\Admin')->prefix('1.0/admin')->group(function () {
     Route::apiResources([
         'settings' => 'SettingController',
         'role' => 'RoleController',
-        'employee' => 'EmployeeController'
+        'employee' => 'EmployeeController',
+        'position' => 'PositionController',
+        'department' => 'DepartmentController',
+        'branch' => 'BranchController',
     ]);
 });
