@@ -64,6 +64,7 @@ Route::namespace('Api\v1\User')->prefix('1.0/user')->group(function () {
         'position' => 'PositionController',
         'department' => 'DepartmentController',
         'branch' => 'BranchController',
+        'country' => 'CountryController',
     ]);
 
 
@@ -83,5 +84,7 @@ Route::namespace('Api\v1\Admin')->prefix('1.0/admin')->group(function () {
         'position' => 'PositionController',
         'department' => 'DepartmentController',
         'branch' => 'BranchController',
+        'title' => 'TitleController',
+        'country' => 'CountryController',
     ]);
 });
