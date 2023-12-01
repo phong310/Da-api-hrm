@@ -13,10 +13,14 @@ class IdentificationController extends Controller
     /**
      * @param IdentificationService $identificationService
      */
+    /**
+     * @param IdentificationService $identificationAdminService
+     */
 
-    public function __construct(IdentificationService $identificationService)
+    public function __construct(IdentificationService $identificationService, IdentificationCardService $identificationAdminService)
     {
         $this->service = $identificationService;
+        $this ->identificationAdminService= $identificationAdminService;
     }
 
     public function identificationCard()
@@ -27,5 +31,34 @@ class IdentificationController extends Controller
     public function updateIdentification(Request $request)
     {
         return $this->service->updateIdentification($request);
+    }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function store(Request $request)
+    {
+        return $this->service->_store($request);
+    }
+
+    /**
+     * @param StoreOrUpdateIdenCardEmployeeRequest $request
+     * @param $employee_id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function updateByEmployee(StoreOrUpdateIdenCardEmployeeRequest $request, $employee_id)
+    {
+        return $this->identificationAdminService->updateByEmployee($request, $employee_id);
+    }
+
+    /**
+     * @param Request $request
+     * @param $employee_id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function byEmployee(Request $request, $employee_id)
+    {
+        return $this->identificationAdminService->getByEmployee($employee_id);
     }
 }

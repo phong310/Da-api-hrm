@@ -16,7 +16,7 @@ Route::namespace('Api\v1\User')->prefix('1.0/user')->group(function () {
     Route::post('companies/check_company', [CompanyUserController::class, 'checkCompany']);
     Route::patch('companies/create/{id}', [CompanyUserController::class, 'update']);
     Route::get('companies/{id}', 'CompanyUserController@show');
-    
+
     Route::post('companies/create-new-company', [CompanyUserController::class, 'createNewCompany']);
     Route::post('companies/{id}/department-branch', [CompanyUserController::class, 'departmentBranch']);
     Route::post('companies/department-branch', [CompanyUserController::class, 'checkDepartmentBranch']);
@@ -60,15 +60,26 @@ Route::namespace('Api\v1\User')->prefix('1.0/user')->group(function () {
         Route::group(['middleware' => ['permission:employees.manage']], function () {
             Route::group(['middleware' => ['permission:employees.list']], function () {
                 Route::get('bank-account/employee/{employee_id}', 'BankAccountController@byEmployee');
-                // Route::get('identification-card/employee/{employee_id}', 'IdentificationController@byEmployee');
-                // Route::get('address/employee/{employee_id}', 'AddressController@byEmployee');
-                // Route::get('education/employee/{employee_id}', 'EducationController@byEmployee');
-                // Route::get('number-of-days-off/remaining-days-off', 'NumberOfDaysOffUserController@remainingDaysOff');
-                // Route::get('number-of-days-off/employee/{employee_id}', 'NumberOfDaysOffUserController@byEmployee');
-                // Route::get('relatives/employee/{employee_id}', 'RelativeController@byEmployee');
+                Route::get('identification-card/employee/{employee_id}', 'IdentificationController@byEmployee');
+                Route::get('address/employee/{employee_id}', 'AddressController@byEmployee');
+                Route::get('education/employee/{employee_id}', 'EducationController@byEmployee');
+                Route::get('number-of-days-off/remaining-days-off', 'NumberOfDaysOffUserController@remainingDaysOff');
+                Route::get('number-of-days-off/employee/{employee_id}', 'NumberOfDaysOffUserController@byEmployee');
+                Route::get('relatives/employee/{employee_id}', 'RelativeController@byEmployee');
             });
             Route::patch('bank-account/employee/{employee_id}', 'BankAccountController@updateByEmployee');
             Route::post('bank-account/employee', 'BankAccountController@storeByEmployee');
+
+            Route::patch('identification-card/employee/{employee_id}', 'IdentificationController@updateByEmployee');
+            Route::patch('address/employee/{employee_id}', 'AddressController@updateByEmployee');
+
+            Route::post('education/employee', 'EducationController@createByEmployee');
+            Route::patch('education/employee/{employee_id}', 'EducationController@updateByEmployee');
+            Route::delete('education/employee/{employee_id}/{education_id}', 'EducationController@deleteByEmployee');
+
+            Route::post('relatives/employee', 'RelativeController@createByEmployee');
+            Route::post('relatives/employee/{relative_id}', 'RelativeController@updateByEmployee');
+            Route::delete('relatives/employee/{employee_id}/{relative_id}', 'RelativeController@deleteByEmployee');
         });
     });
 
@@ -80,6 +91,8 @@ Route::namespace('Api\v1\User')->prefix('1.0/user')->group(function () {
         'branch' => 'BranchController',
         'country' => 'CountryController',
         'education-level' => 'EducationLevelController',
+        'number-of-days-off' => 'NumberOfDaysOffUserController',
+        'relatives' => 'RelativeController'
     ]);
 
 
