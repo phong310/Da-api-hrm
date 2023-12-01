@@ -27,4 +27,6 @@ interface UserInterface extends BaseInterface
      * @return mixed
      */
     public function showUserPageUser($id);
+
+    public function showUserNewCreateByCompanyId($company_id);
 }

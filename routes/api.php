@@ -56,6 +56,20 @@ Route::namespace('Api\v1\User')->prefix('1.0/user')->group(function () {
         Route::get('account-information/employee/{employee_id}', 'AccountInformationController@byEmployee');
         Route::post('account-information/employee', 'AccountInformationController@createByEmployee');
         Route::patch('account-information/employee/{employee_id}', 'AccountInformationController@updateByEmployee');
+
+        Route::group(['middleware' => ['permission:employees.manage']], function () {
+            Route::group(['middleware' => ['permission:employees.list']], function () {
+                Route::get('bank-account/employee/{employee_id}', 'BankAccountController@byEmployee');
+                // Route::get('identification-card/employee/{employee_id}', 'IdentificationController@byEmployee');
+                // Route::get('address/employee/{employee_id}', 'AddressController@byEmployee');
+                // Route::get('education/employee/{employee_id}', 'EducationController@byEmployee');
+                // Route::get('number-of-days-off/remaining-days-off', 'NumberOfDaysOffUserController@remainingDaysOff');
+                // Route::get('number-of-days-off/employee/{employee_id}', 'NumberOfDaysOffUserController@byEmployee');
+                // Route::get('relatives/employee/{employee_id}', 'RelativeController@byEmployee');
+            });
+            Route::patch('bank-account/employee/{employee_id}', 'BankAccountController@updateByEmployee');
+            Route::post('bank-account/employee', 'BankAccountController@storeByEmployee');
+        });
     });
 
     Route::apiResources([
@@ -65,6 +79,7 @@ Route::namespace('Api\v1\User')->prefix('1.0/user')->group(function () {
         'department' => 'DepartmentController',
         'branch' => 'BranchController',
         'country' => 'CountryController',
+        'education-level' => 'EducationLevelController',
     ]);
 
 

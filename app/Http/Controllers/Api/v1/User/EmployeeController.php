@@ -17,11 +17,15 @@ class EmployeeController extends BaseController
      */
     protected $employeeUserService;
     protected $employeeAdminService;
-    /**/
-
-    public function __construct(EmployeeService $employeeService)
+    /**
+     * Instantiate a new controller instance.
+     *
+     * @param EmployeeService $employeeUserService
+     */
+    public function __construct(EmployeeService $employeeService, EmployeeAdminService $employeeAdminService)
     {
         $this->employeeUserService = $employeeService;
+        $this->employeeAdminService = $employeeAdminService;
     }
 
     /**
@@ -32,6 +36,17 @@ class EmployeeController extends BaseController
     {
         return $this->employeeUserService->index($request);
     }
+
+    /**
+     * @param Request $request
+     * @param $id
+     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|\Illuminate\Http\JsonResponse|mixed|object|null
+     */
+    public function show(Request $request, $id)
+    {
+        return $this->employeeAdminService->show($request, $id);
+    }
+
 
     /**
      * @param Request $request
@@ -51,6 +66,21 @@ class EmployeeController extends BaseController
     public function updateInfo(Request $request, $employee_id)
     {
         return $this->employeeUserService->updateInfo($request, $employee_id);
+    }
+
+    /**
+     * @param Request $request
+     * @param $id
+     * @return mixed
+     */
+    public function update(UpdateEmployeeRequest $request, $id)
+    {
+        return $this->employeeAdminService->update($request, $id);
+    }
+
+    public function store(CreateEmployeeRequest $request)
+    {
+        return $this->employeeAdminService->store($request);
     }
 
     public function getListByCompany()

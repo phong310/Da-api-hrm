@@ -2,6 +2,12 @@
 
 namespace App\Providers;
 
+use App\Repositories\BranchRepository;
+use App\Repositories\DepartmentRepository;
+use App\Repositories\EmployeeRepository;
+use App\Repositories\Interfaces\BranchInterface;
+use App\Repositories\Interfaces\DepartmentInterface;
+use App\Repositories\Interfaces\EmployeeInterface;
 use App\Repositories\Interfaces\PositionInterface;
 use Illuminate\Support\ServiceProvider;
 use App\Repositories\Interfaces\UserInterface;
@@ -22,9 +28,12 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->bind(UserInterface::class, UserRepository::class);
+        $this->app->bind(EmployeeInterface::class, EmployeeRepository::class);
         $this->app->bind(RoleInterface::class, RoleRepository::class);
         $this->app->bind(PositionInterface::class, PositionRepositiory::class);
         $this->app->bind(TitleInterface::class, TitleRepository::class);
+        $this->app->bind(BranchInterface::class, BranchRepository::class);
+        $this->app->bind(DepartmentInterface::class, DepartmentRepository::class);
     }
 
     /**

@@ -79,4 +79,13 @@ class UserRepository implements UserInterface
             ])
             ->first();
     }
+
+    public function showUserNewCreateByCompanyId($company_id)
+    {
+        $data = $this->user::query()
+            ->where('company_id', $company_id)
+            ->whereNull('employee_id')
+            ->first();
+        return $data;
+    }
 }
