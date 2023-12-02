@@ -50,59 +50,59 @@ class EmployeeService extends UserBaseService
     }
 
 
-    // public function appendFilter()
-    // {
-    //     $employee_full_name = $this->request->get('full_name');
-    //     $employee_email = $this->request->get('email');
-    //     $employee_status = $this->request->get('status');
-    //     $employee_department = $this->request->get('department');
-    //     $employee_branch = $this->request->get('branch');
-    //     $employee_position = $this->request->get('position');
+    public function appendFilter()
+    {
+        $employee_full_name = $this->request->get('full_name');
+        $employee_email = $this->request->get('email');
+        $employee_status = $this->request->get('status');
+        $employee_department = $this->request->get('department');
+        $employee_branch = $this->request->get('branch');
+        $employee_position = $this->request->get('position');
 
-    //     if ($employee_full_name) {
-    //         $this->query->whereHas('personalInformation', function ($q) use ($employee_full_name) {
-    //             $q->whereRaw(
-    //                 "TRIM(CONCAT(first_name, ' ', last_name)) like '%{$employee_full_name}%'"
-    //             );
-    //         });
-    //     }
-    //     if ($employee_email) {
-    //         $this->query->whereHas('personalInformation', function ($q) use ($employee_email) {
-    //             $q->whereRaw(
-    //                 "TRIM(email) like '%{$employee_email}%'"
-    //             );
-    //         });
-    //     }
-    //     if (!is_null($employee_status)) {
-    //         $this->query->where('status', $employee_status);
-    //     }
-    //     if ($employee_department) {
-    //         $this->query->whereHas('department', function ($q) use ($employee_department) {
-    //             $q->whereRaw(
-    //                 "TRIM(id) like '%{$employee_department}%'"
-    //             );
-    //         });
-    //     }
-    //     if ($employee_branch) {
-    //         $this->query->whereHas('branch', function ($q) use ($employee_branch) {
-    //             $q->whereRaw(
-    //                 "TRIM(id) like '%{$employee_branch}%'"
-    //             );
-    //         });
-    //     }
-    //     if ($employee_position) {
-    //         $this->query->whereHas('position', function ($q) use ($employee_position) {
-    //             $q->whereRaw(
-    //                 "TRIM(id) like '%{$employee_position}%'"
-    //             );
-    //         });
-    //     }
+        if ($employee_full_name) {
+            $this->query->whereHas('personalInformation', function ($q) use ($employee_full_name) {
+                $q->whereRaw(
+                    "TRIM(CONCAT(first_name, ' ', last_name)) like '%{$employee_full_name}%'"
+                );
+            });
+        }
+        if ($employee_email) {
+            $this->query->whereHas('personalInformation', function ($q) use ($employee_email) {
+                $q->whereRaw(
+                    "TRIM(email) like '%{$employee_email}%'"
+                );
+            });
+        }
+        if (!is_null($employee_status)) {
+            $this->query->where('status', $employee_status);
+        }
+        if ($employee_department) {
+            $this->query->whereHas('department', function ($q) use ($employee_department) {
+                $q->whereRaw(
+                    "TRIM(id) like '%{$employee_department}%'"
+                );
+            });
+        }
+        if ($employee_branch) {
+            $this->query->whereHas('branch', function ($q) use ($employee_branch) {
+                $q->whereRaw(
+                    "TRIM(id) like '%{$employee_branch}%'"
+                );
+            });
+        }
+        if ($employee_position) {
+            $this->query->whereHas('position', function ($q) use ($employee_position) {
+                $q->whereRaw(
+                    "TRIM(id) like '%{$employee_position}%'"
+                );
+            });
+        }
 
 
-    //     $this->query->with(['information', 'user'])
-    //         ->join('personal_information', 'employees.personal_information_id', '=', 'personal_information.id')
-    //         ->orderByRaw("TRIM(CONCAT(personal_information.first_name, ' ', personal_information.last_name)) asc");
-    // }
+        $this->query->with(['information', 'user'])
+            ->join('personal_information', 'employees.personal_information_id', '=', 'personal_information.id')
+            ->orderByRaw("TRIM(CONCAT(personal_information.first_name, ' ', personal_information.last_name)) asc");
+    }
 
     /**
      * @param $data
