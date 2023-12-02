@@ -58,6 +58,7 @@ class EmployeeService extends UserBaseService
         $employee_department = $this->request->get('department');
         $employee_branch = $this->request->get('branch');
         $employee_position = $this->request->get('position');
+        $this->query->select("employees.*");
 
         if ($employee_full_name) {
             $this->query->whereHas('personalInformation', function ($q) use ($employee_full_name) {
