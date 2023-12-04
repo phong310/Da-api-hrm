@@ -15,9 +15,13 @@ use App\Repositories\Interfaces\UserInterface;
 use App\Repositories\UserRepository;
 use App\Repositories\RoleRepository;
 use App\Repositories\Interfaces\RoleInterface;
+use App\Repositories\Interfaces\TimeSheetInterface;
+use App\Repositories\Interfaces\TimeSheetLogInterface;
 use App\Repositories\Interfaces\TitleInterface;
 use App\Repositories\NumberOfDaysOffRepository;
 use App\Repositories\PositionRepositiory;
+use App\Repositories\TimeSheetLogRepository;
+use App\Repositories\TimeSheetRepository;
 use App\Repositories\TitleRepository;
 
 class AppServiceProvider extends ServiceProvider
@@ -37,6 +41,8 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(BranchInterface::class, BranchRepository::class);
         $this->app->bind(DepartmentInterface::class, DepartmentRepository::class);
         $this->app->bind(NumberOfDaysOffInterface::class, NumberOfDaysOffRepository::class);
+        $this->app->bind(TimeSheetLogInterface::class, TimeSheetLogRepository::class);
+        $this->app->bind(TimeSheetInterface::class, TimeSheetRepository::class);
     }
 
     /**

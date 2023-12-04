@@ -57,6 +57,9 @@ Route::namespace('Api\v1\User')->prefix('1.0/user')->group(function () {
         Route::post('account-information/employee', 'AccountInformationController@createByEmployee');
         Route::patch('account-information/employee/{employee_id}', 'AccountInformationController@updateByEmployee');
 
+        // TimeKeeping
+        Route::get('timekeeping/today', 'TimeKeepingController@todayTimeSheetLog');
+
         Route::group(['middleware' => ['permission:employees.manage']], function () {
             Route::group(['middleware' => ['permission:employees.list']], function () {
                 Route::get('bank-account/employee/{employee_id}', 'BankAccountController@byEmployee');
@@ -80,39 +83,44 @@ Route::namespace('Api\v1\User')->prefix('1.0/user')->group(function () {
             Route::post('relatives/employee', 'RelativeController@createByEmployee');
             Route::post('relatives/employee/{relative_id}', 'RelativeController@updateByEmployee');
             Route::delete('relatives/employee/{employee_id}/{relative_id}', 'RelativeController@deleteByEmployee');
+
+            Route::apiResources([
+                'role' => 'RoleController',
+                'employee' => 'EmployeeController',
+                'position' => 'PositionController',
+                'department' => 'DepartmentController',
+                'branch' => 'BranchController',
+                'country' => 'CountryController',
+                'education-level' => 'EducationLevelController',
+                'number-of-days-off' => 'NumberOfDaysOffUserController',
+                'relatives' => 'RelativeController'
+            ]);
         });
+
+        Route::apiResources([
+            'working-day' => 'WorkingDayUserController',
+            'timekeeping' => 'TimeKeepingController'
+        ]);
     });
-
-    Route::apiResources([
-        'role' => 'RoleController',
-        'employee' => 'EmployeeController',
-        'position' => 'PositionController',
-        'department' => 'DepartmentController',
-        'branch' => 'BranchController',
-        'country' => 'CountryController',
-        'education-level' => 'EducationLevelController',
-        'number-of-days-off' => 'NumberOfDaysOffUserController',
-        'relatives' => 'RelativeController'
-    ]);
-
-
-    Route::apiResources([
-        'working-day' => 'WorkingDayUserController',
-    ]);
 });
 
 
 // ADMIN ROUTER
 Route::namespace('Api\v1\Admin')->prefix('1.0/admin')->group(function () {
+    Route::post('login', 'AuthController@login');
+    Route::post('refresh-token', 'AuthController@refreshToken');
 
-    Route::apiResources([
-        'settings' => 'SettingController',
-        'role' => 'RoleController',
-        'employee' => 'EmployeeController',
-        'position' => 'PositionController',
-        'department' => 'DepartmentController',
-        'branch' => 'BranchController',
-        'title' => 'TitleController',
-        'country' => 'CountryController',
-    ]);
+
+    Route::middleware(['auth:api'])->group(function () {
+        Route::apiResources([
+            'settings' => 'SettingController',
+            'role' => 'RoleController',
+            'employee' => 'EmployeeController',
+            'position' => 'PositionController',
+            'department' => 'DepartmentController',
+            'branch' => 'BranchController',
+            'title' => 'TitleController',
+            'country' => 'CountryController',
+        ]);
+    });
 });

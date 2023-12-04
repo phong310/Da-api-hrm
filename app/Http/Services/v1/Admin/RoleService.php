@@ -39,14 +39,15 @@ class RoleService extends BaseService
     {
         $default_roles = Config::get('default_permissions.roles_default');
         $roles = Config::get('default_permissions.roles');
+
         foreach ($default_roles as $item) {
             $data = [
                 'name' => $item,
                 'guard_name' => 'user-api',
                 'company_id' => $company_id,
             ];
-            $newRole = $this->role->updateOrCreate($data, $data);
 
+            $newRole = $this->role->updateOrCreate($data, $data);
             $permissions = $this->getPermissionsByRole($roles[$item]['permissions']);
             $newRole->givePermissionTo($permissions);
         }
@@ -98,5 +99,84 @@ class RoleService extends BaseService
 
             return $this->errorResponse();
         }
+    }
+
+    /**
+     * @param Request $request
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function update(Request $request, $id)
+    {
+        $data = $request->only($this->model->getFillable());
+        $permissions = $request->permissions;
+        try {
+            DB::beginTransaction();
+            $role = $this->role->update($data, $id);
+            $role->syncPermissions($permissions);
+            DB::commit();
+
+            return response()->json([
+                'message' => __('message.update_success'),
+                'data' => $role,
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error($e);
+
+            return $this->errorResponse();
+        }
+    }
+
+    /**
+     * @param $data
+     * @return mixed
+     */
+    public function setTransformers($data)
+    {
+        $collection = $data->getCollection();
+        $roles = collect($collection)->transformWith(new RoleTransformer())
+            ->paginateWith(new IlluminatePaginatorAdapter($data));
+
+        return $roles;
+    }
+
+    /**
+     * @param Request $request
+     * @param $id
+     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Http\JsonResponse|mixed
+     */
+    public function show(Request $request, $id)
+    {
+        $role = $this->role->show($id);
+        if (!$role) {
+            return response()->json([
+                'message' => __('message.not_found'),
+            ], 404);
+        }
+        $permissions = $role->permissions;
+        $data = fractal($role, new RoleTransformer());
+
+        return response()->json([
+            'role' => $data,
+            'permissions' => $permissions,
+        ]);
+    }
+
+    /**
+     * @param Request $request
+     * @param $id
+     * @param false $isForceDelete
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function destroy(Request $request, $id, $isForceDelete = false)
+    {
+        $role = $this->role->show($id);
+        $role->users->update(['role_id' => null]);
+        $role->delete();
+
+        return response()->json([
+            'message' => __('message.deleted_success'),
+        ]);
     }
 }

@@ -40,16 +40,6 @@ class BaseMasterController extends Controller
         return $this->service->show($request, $id);
     }
 
-    //    public function store(Request $request)
-    //    {
-    //        return $this->service->store($request);
-    //    }
-
-    //    public function update(Request $request, $id)
-    //    {
-    //        return $this->service->update($request, $id);
-    //    }
-
     /**
      * @param Request $request
      * @param $id
