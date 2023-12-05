@@ -37,7 +37,7 @@ Route::namespace('Api\v1\User')->prefix('1.0/user')->group(function () {
 
     Route::middleware(['auth:api'])->group(function () {
         Route::post('logout', 'AuthController@logout');
-
+        
         // Profile personal
         Route::get('me', 'AuthController@me');
         Route::get('me/info', 'AuthController@info');

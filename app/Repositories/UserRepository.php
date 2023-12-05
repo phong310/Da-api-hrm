@@ -75,7 +75,11 @@ class UserRepository implements UserInterface
                 'employee.personalInformation.addresses',
                 'employee.personalInformation.country',
                 'employee.personalInformation.job',
+                'employee.personalInformation.title',
                 'employee.position',
+                'employee.department',
+                'employee.branch',
+
             ])
             ->first();
     }
