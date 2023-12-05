@@ -93,4 +93,14 @@ class UserService extends BaseService
     {
         return $this->query->where('company_id', $companyId)->get();
     }
+
+    public function resetEmployeePassword(Request $request)
+    {
+        $userId = $request->userId;
+        User::where('id', $userId)->update(['password' => bcrypt($request->userNewPassword)]);
+
+        return response()->json([
+            'message' => __('message.update_success'),
+        ], 200);
+    }
 }

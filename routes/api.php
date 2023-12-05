@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\v1\Admin\UserController;
 use App\Http\Controllers\Api\v1\User\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -46,7 +47,7 @@ Route::namespace('Api\v1\User')->prefix('1.0/user')->group(function () {
         Route::post('me/update-identification', 'IdentificationController@updateIdentification');
         Route::get('me/address', 'AddressController@address');
         Route::post('me/update-address/{employee_id}', 'AddressController@updateAddress');
-        // Route::patch('update-password', 'AuthController@updatePassword');
+        Route::patch('update-password', 'AuthController@updatePassword');
 
         // Employee
         Route::get('employee/{employee_id}/info', 'EmployeeController@info');
@@ -101,6 +102,8 @@ Route::namespace('Api\v1\User')->prefix('1.0/user')->group(function () {
             'working-day' => 'WorkingDayUserController',
             'timekeeping' => 'TimeKeepingController'
         ]);
+        
+        Route::patch('reset-password', [UserController::class, 'resetEmployeePassword']);
     });
 });
 

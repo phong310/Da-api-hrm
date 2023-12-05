@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\UserRegister;
 use App\Http\Requests\UserLogin;
 use App\Http\Services\v1\User\AuthService;
+use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 
 class AuthController extends Controller
@@ -117,5 +118,25 @@ class AuthController extends Controller
         } else {
             return response()->json(['message' => 'User not authenticated'], 401);
         }
+    }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function updatePassword(Request $request)
+    {
+        $user = Auth::user();
+        if (!Hash::check($request->currentPassword, $user->getAuthPassword())) {
+            return response()->json([
+                'message' => __('message.current_password'),
+            ], 403);
+        }
+
+        User::where('id', $user->id)->update(['password' => bcrypt($request->newPassword), 'is_first_time_login' => true]);
+
+        return response()->json([
+            'message' => __('message.update_success'),
+        ], 200);
     }
 }
