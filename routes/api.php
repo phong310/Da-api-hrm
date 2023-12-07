@@ -8,7 +8,7 @@ use App\Http\Controllers\Api\v1\User\CompanyUserController;
 
 
 // USER ROUTER
-Route::namespace('Api\v1\User')->prefix('1.0/user')->group(function () {
+Route::namespace('Api\v1\User')->middleware(['language'])->prefix('1.0/user')->group(function () {
     Route::post('login', 'AuthController@login');
     Route::post('refresh-token', 'AuthController@refreshToken');
 
@@ -37,7 +37,7 @@ Route::namespace('Api\v1\User')->prefix('1.0/user')->group(function () {
 
     Route::middleware(['auth:api'])->group(function () {
         Route::post('logout', 'AuthController@logout');
-        
+
         // Profile personal
         Route::get('me', 'AuthController@me');
         Route::get('me/info', 'AuthController@info');
@@ -94,7 +94,7 @@ Route::namespace('Api\v1\User')->prefix('1.0/user')->group(function () {
                 'country' => 'CountryController',
                 'education-level' => 'EducationLevelController',
                 'number-of-days-off' => 'NumberOfDaysOffUserController',
-                'relatives' => 'RelativeController'
+                'relatives' => 'RelativeController',
             ]);
         });
 
@@ -102,7 +102,7 @@ Route::namespace('Api\v1\User')->prefix('1.0/user')->group(function () {
             'working-day' => 'WorkingDayUserController',
             'timekeeping' => 'TimeKeepingController'
         ]);
-        
+
         Route::patch('reset-password', [UserController::class, 'resetEmployeePassword']);
     });
 });
