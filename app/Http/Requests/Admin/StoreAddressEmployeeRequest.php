@@ -27,11 +27,11 @@ class StoreAddressEmployeeRequest extends FormRequest
 
         $data_resident = request()->RESIDENT;
         if ($data_resident['address'] || $data_resident['province'] || $data_resident['district'] || $data_resident['ward']) {
-            $rules['RESIDENT.*'] = ['required', 'max:100'];
+            $rules['RESIDENT'] = ['required', 'max:100'];
         }
         $data_domicile = request()->DOMICILE;
         if ($data_domicile['address'] || $data_domicile['province'] || $data_domicile['district'] || $data_domicile['ward']) {
-            $rules['DOMICILE.*'] = ['required', 'max:100'];
+            $rules['DOMICILE'] = ['required', 'max:100'];
         }
 
         return $rules;

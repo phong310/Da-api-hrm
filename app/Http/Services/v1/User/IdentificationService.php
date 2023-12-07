@@ -24,8 +24,13 @@ class IdentificationService extends BaseService
     public function identificationCard()
     {
         $employee_id = request()->user()->employee_id;
-        $employee = Employee::where(['id' => $employee_id])->with('information', 'information.identificationCards')->first();
-        return response()->json(count($employee->information->identificationCards) ? $employee->information->identificationCards[0] : (object)[]);
+        $employee = Employee::where(['id' => $employee_id])
+            ->with('information', 'information.identificationCards')
+            ->first();
+
+        $identificationCards = $employee->information->identificationCards;
+
+        return response()->json(count($identificationCards) ? [$identificationCards[0]] : (object)[]);
     }
 
     /**

@@ -32,6 +32,7 @@ class AddressService extends BaseService
         $data = $request->all();
         $employee = Employee::query()->where(['id' => $employee_id])->first();
         $addresses = [$data['RESIDENT'], $data['DOMICILE']];
+
         try {
             if (!count($addresses) || !$employee) {
                 return response()->json([
