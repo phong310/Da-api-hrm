@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\v1\User\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\v1\User\CompanyUserController;
+use App\Http\Controllers\Api\v1\User\NotificationController as UserNotificationController;
 
 
 // USER ROUTER
@@ -60,6 +61,7 @@ Route::namespace('Api\v1\User')->middleware(['language'])->prefix('1.0/user')->g
 
         // TimeKeeping
         Route::get('timekeeping/today', 'TimeKeepingController@todayTimeSheetLog');
+        Route::get('timekeeping/check-has-timekeeping', 'TimeKeepingController@checkHasTimekeeping');
 
         Route::group(['middleware' => ['permission:employees.manage']], function () {
             Route::group(['middleware' => ['permission:employees.list']], function () {
@@ -95,6 +97,7 @@ Route::namespace('Api\v1\User')->middleware(['language'])->prefix('1.0/user')->g
                 'education-level' => 'EducationLevelController',
                 'number-of-days-off' => 'NumberOfDaysOffUserController',
                 'relatives' => 'RelativeController',
+                'leave-form' => 'LeaveFormUserController',
             ]);
         });
 
@@ -102,6 +105,8 @@ Route::namespace('Api\v1\User')->middleware(['language'])->prefix('1.0/user')->g
             'working-day' => 'WorkingDayUserController',
             'timekeeping' => 'TimeKeepingController'
         ]);
+        Route::get('notifications', [UserNotificationController::class, 'index']);
+        Route::patch('leave-form/cancel/{id}', [\App\Http\Controllers\Api\v1\User\LeaveFormUserController::class, 'cancel']);
 
         Route::patch('reset-password', [UserController::class, 'resetEmployeePassword']);
     });
@@ -124,6 +129,7 @@ Route::namespace('Api\v1\Admin')->prefix('1.0/admin')->group(function () {
             'branch' => 'BranchController',
             'title' => 'TitleController',
             'country' => 'CountryController',
+            'working-day' => 'WorkingDayController',
         ]);
     });
 });

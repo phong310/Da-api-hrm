@@ -56,15 +56,15 @@ class TimeKeepingService extends UserBaseService
      */
     public function __construct(
         // TimeSheetService $timesheetService,
-        // WorkingDayInterface $workingDay,
-        // HolidayInterface $holiday,
+        WorkingDayInterface $workingDay,
+        HolidayInterface $holiday,
         // LeaveFormInterface $leaveForm,
         // RequestChangeTimesheetInterface $requestChangeTimeForm,
         TimeSheetInterface $timeSheet,
         TimeSheetLogInterface $timeSheetLog
     ) {
-        // $this->workingDay = $workingDay;
-        // $this->holiday = $holiday;
+        $this->workingDay = $workingDay;
+        $this->holiday = $holiday;
         // $this->leaveForm = $leaveForm;
         // $this->requestChangeTimeForm = $requestChangeTimeForm;
         // $this->timesheetService = $timesheetService;
@@ -229,72 +229,49 @@ class TimeKeepingService extends UserBaseService
         return $this->timeSheetLog->getTimeSheetLogOnDate($employee_id, $date);
     }
 
-    // /**
-    //  * @param Request $request
-    //  * @return array|bool[]|\Illuminate\Http\JsonResponse
-    //  */
-    // public function checkHasTimekeeping(Request $request)
-    // {
-    //     $user = $request->user();
-    //     $employee_id = $user->employee_id;
-    //     $companyId = $user->company_id;
-    //     $date = Carbon::yesterday();
+    /**
+     * @param Request $request
+     * @return array|bool[]|\Illuminate\Http\JsonResponse
+     */
+    public function checkHasTimekeeping(Request $request)
+    {
+        $user = $request->user();
+        $employee_id = $user->employee_id;
+        $companyId = $user->company_id;
+        $date = Carbon::yesterday();
 
-    //     while (
-    //         !$this->workingDay->showWorkingDayByDate($companyId, $date) ||
-    //         $this->holiday->checkHolidayByDate($companyId, $date)
-    //     ) {
-    //         $date = $date->subDay();
-    //     }
+        while (
+            !$this->workingDay->showWorkingDayByDate($companyId, $date) ||
+            $this->holiday->checkHolidayByDate($companyId, $date)
+        ) {
+            $date = $date->subDay();
+        }
 
-    //     $dateString = $date->toDateString();
-    //     $res = [
-    //         'date' => $dateString,
-    //     ];
+        $dateString = $date->toDateString();
+        $res = [
+            'date' => $dateString,
+        ];
 
-    //     $leaveForm = $this->leaveForm->showByDate($date, $employee_id);
-    //     $requestChangeTimeFrom = $this->requestChangeTimeForm->showByDate($date, $employee_id);
-    //     $timesheetsLog = $this->timesheetLogOnDate($employee_id, $dateString);
+        $leaveForm = $this->leaveForm->showByDate($date, $employee_id);
+        $requestChangeTimeFrom = $this->requestChangeTimeForm->showByDate($date, $employee_id);
+        $timesheetsLog = $this->timesheetLogOnDate($employee_id, $dateString);
 
-    //     if ($requestChangeTimeFrom) {
-    //         return array_merge($res, $timesheetsLog, ['forget_timekeeping' => false]);
-    //     }
+        if ($requestChangeTimeFrom) {
+            return array_merge($res, $timesheetsLog, ['forget_timekeeping' => false]);
+        }
 
-    //     if ($leaveForm) {
-    //         if (!$timesheetsLog['last']) {
-    //             return array_merge($res, $timesheetsLog, ['forget_timekeeping' => true]);
-    //         }
+        if ($leaveForm) {
+            if (!$timesheetsLog['last']) {
+                return array_merge($res, $timesheetsLog, ['forget_timekeeping' => true]);
+            }
 
-    //         return array_merge($res, $timesheetsLog, ['forget_timekeeping' => false]);
-    //     } else {
-    //         return response()->json(array_merge($res, $timesheetsLog, [
-    //             'forget_timekeeping' => !($timesheetsLog['first'] && $timesheetsLog['last']),
-    //         ]));
-    //     }
-    // }
-
-    //     $timekeepingSetting = TimekeepingSetting::query()->where("company_id", $companyId)->first();
-
-    //     if ($timekeepingSetting) {
-    //         if ($timekeepingSetting->is_require_image && $request->image) {
-    //             $data["image_url"] = $this->uploadImage($employeeId, $request->image);
-    //         }
-
-    //         if ($timekeepingSetting->is_require_gps) {
-    //             $data["longitude"] = $request->longitude;
-    //             $data["latitude"] = $request->latitude;
-    //         }
-    //     }
-
-    //     $timesheet_log = TimeSheetsLog::create($data);
-
-    //     return response()->json([
-    //         'message' => __('message.timekeeping_success'),
-    //         'data' => [
-    //             'timesheet_log' => $timesheet_log,
-    //         ],
-    //     ]);
-    // }
+            return array_merge($res, $timesheetsLog, ['forget_timekeeping' => false]);
+        } else {
+            return response()->json(array_merge($res, $timesheetsLog, [
+                'forget_timekeeping' => !($timesheetsLog['first'] && $timesheetsLog['last']),
+            ]));
+        }
+    }
 
     // public function haversineDistance($lat1, $lon1, $lat2, $lon2)
     // {

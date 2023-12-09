@@ -86,6 +86,15 @@ class CompanyService extends BaseService
         }
     }
 
+    /**
+     * @param $company_id
+     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
+     */
+    public function getSettingOfCompany($company_id)
+    {
+        return Setting::query()->where(['company_id' => $company_id])->first();
+    }
+
     public function storeNew(Request $request)
     {
         $data = $request->only($this->model->getFillable());
