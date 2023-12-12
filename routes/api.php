@@ -99,15 +99,19 @@ Route::namespace('Api\v1\User')->middleware(['language'])->prefix('1.0/user')->g
                 'education-level' => 'EducationLevelController',
                 'number-of-days-off' => 'NumberOfDaysOffUserController',
                 'relatives' => 'RelativeController',
-                'leave-form' => 'LeaveFormUserController',
+                
             ]);
         });
+        Route::get('holiday', 'HolidayController@index');
+        Route::get('setting-types-overtime', 'SettingTypesOvertimeController@index');
 
         Route::apiResources([
             'working-day' => 'WorkingDayUserController',
             'timekeeping' => 'TimeKeepingController',
             'compensatory-working-day' => 'CompensatoryWorkingDayController',
             'manager/form' => 'ManagerController',
+            'leave-form' => 'LeaveFormUserController',
+            'overtime-form' => 'OverTimeController',
         ]);
         // Loại nghỉ phép
         Route::get('kind-of-leave', 'KindOfLeaveController@index');
