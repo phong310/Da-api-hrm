@@ -15,7 +15,9 @@ use App\Repositories\Interfaces\DepartmentInterface;
 use App\Repositories\Interfaces\EmployeeInterface;
 use App\Repositories\Interfaces\Forms\CompensatoryLeaveInterface;
 use App\Repositories\Interfaces\Forms\LeaveFormInterface;
+use App\Repositories\Interfaces\Forms\RequestChangeTimesheetInterface;
 use App\Repositories\Interfaces\HolidayInterface;
+use App\Repositories\Interfaces\KindOfLeaveInterface;
 use App\Repositories\Interfaces\NotificationInterface;
 use App\Repositories\Interfaces\NumberOfDaysOffInterface;
 use App\Repositories\Interfaces\PositionInterface;
@@ -28,10 +30,12 @@ use App\Repositories\Interfaces\TimeSheetInterface;
 use App\Repositories\Interfaces\TimeSheetLogInterface;
 use App\Repositories\Interfaces\TitleInterface;
 use App\Repositories\Interfaces\WorkingDayInterface;
+use App\Repositories\KindOfLeaveRepository;
 use App\Repositories\LeaveFormRepository;
 use App\Repositories\NotificationRepository;
 use App\Repositories\NumberOfDaysOffRepository;
 use App\Repositories\PositionRepositiory;
+use App\Repositories\RequestChangeTimesheetRepository;
 use App\Repositories\TimeSheetLogRepository;
 use App\Repositories\TimeSheetRepository;
 use App\Repositories\TitleRepository;
@@ -62,6 +66,8 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(HolidayInterface::class, HolidayRepository::class);
         $this->app->bind(CompensatoryLeaveInterface::class, CompensatoryLeaveRepository::class);
         $this->app->bind(NotificationInterface::class, NotificationRepository::class);
+        $this->app->bind(RequestChangeTimesheetInterface::class, RequestChangeTimesheetRepository::class);
+        $this->app->bind(KindOfLeaveInterface::class, KindOfLeaveRepository::class);
     }
 
     /**

@@ -58,15 +58,15 @@ class TimeKeepingService extends UserBaseService
         // TimeSheetService $timesheetService,
         WorkingDayInterface $workingDay,
         HolidayInterface $holiday,
-        // LeaveFormInterface $leaveForm,
-        // RequestChangeTimesheetInterface $requestChangeTimeForm,
+        LeaveFormInterface $leaveForm,
+        RequestChangeTimesheetInterface $requestChangeTimeForm,
         TimeSheetInterface $timeSheet,
         TimeSheetLogInterface $timeSheetLog
     ) {
         $this->workingDay = $workingDay;
         $this->holiday = $holiday;
-        // $this->leaveForm = $leaveForm;
-        // $this->requestChangeTimeForm = $requestChangeTimeForm;
+        $this->leaveForm = $leaveForm;
+        $this->requestChangeTimeForm = $requestChangeTimeForm;
         // $this->timesheetService = $timesheetService;
         $this->timeSheet = $timeSheet;
         $this->timeSheetLog = $timeSheetLog;
@@ -80,28 +80,28 @@ class TimeKeepingService extends UserBaseService
         $this->model = new TimeSheetsLog();
     }
 
-    // /**
-    //  * @param $data
-    //  * @param $filtered
-    //  * @return mixed
-    //  */
-    // public function setTransformers($data, $filtered)
-    // {
-    //     $timesheets = collect($filtered)->transformWith(new TimeSheetTransformer())
-    //         ->paginateWith(new IlluminatePaginatorAdapter($data));
+    /**
+     * @param $data
+     * @param $filtered
+     * @return mixed
+     */
+    public function setTransformers($data, $filtered)
+    {
+        $timesheets = collect($filtered)->transformWith(new TimeSheetTransformer())
+            ->paginateWith(new IlluminatePaginatorAdapter($data));
 
-    //     return $timesheets;
-    // }
+        return $timesheets;
+    }
 
-    // public function setTransformersNotPaginate($data, $minusTotalTimeWorking = false)
-    // {
-    //     foreach ($data as $val) {
-    //         $totalAllTimeWorking = $this->calculateTotalAllTimeWork($val['date']);
-    //         $val['total_all_time_work'] = $totalAllTimeWorking;
-    //     };
+    public function setTransformersNotPaginate($data, $minusTotalTimeWorking = false)
+    {
+        foreach ($data as $val) {
+            $totalAllTimeWorking = $this->calculateTotalAllTimeWork($val['date']);
+            $val['total_all_time_work'] = $totalAllTimeWorking;
+        };
 
-    //     return collect($data)->transformWith(new TimeSheetTransformer($minusTotalTimeWorking));
-    // }
+        return collect($data)->transformWith(new TimeSheetTransformer($minusTotalTimeWorking));
+    }
 
     /**
      * @param Request $request

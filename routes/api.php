@@ -63,6 +63,8 @@ Route::namespace('Api\v1\User')->middleware(['language'])->prefix('1.0/user')->g
         Route::get('timekeeping/today', 'TimeKeepingController@todayTimeSheetLog');
         Route::get('timekeeping/check-has-timekeeping', 'TimeKeepingController@checkHasTimekeeping');
 
+        Route::get('day-off/remaining-days-off', 'NumberOfDaysOffUserController@remainingDaysOff');
+
         Route::group(['middleware' => ['permission:employees.manage']], function () {
             Route::group(['middleware' => ['permission:employees.list']], function () {
                 Route::get('bank-account/employee/{employee_id}', 'BankAccountController@byEmployee');
@@ -103,9 +105,22 @@ Route::namespace('Api\v1\User')->middleware(['language'])->prefix('1.0/user')->g
 
         Route::apiResources([
             'working-day' => 'WorkingDayUserController',
-            'timekeeping' => 'TimeKeepingController'
+            'timekeeping' => 'TimeKeepingController',
+            'compensatory-working-day' => 'CompensatoryWorkingDayController',
+            'manager/form' => 'ManagerController',
         ]);
+        // Loại nghỉ phép
+        Route::get('kind-of-leave', 'KindOfLeaveController@index');
+        Route::get('manager/approvers', 'ManagerController@getApprovers');
+        Route::patch('manager/form/action/{id}', 'ManagerController@handleForm');
+
+        
         Route::get('notifications', [UserNotificationController::class, 'index']);
+        Route::post('notifications', [UserNotificationController::class, 'store']);
+        Route::get('notifications/new-count', [UserNotificationController::class, 'newCount']);
+        Route::patch('notifications/mark-as-read/{id}', [UserNotificationController::class, 'markAsRead']);
+        Route::patch('notifications/mark-all-as-read', [UserNotificationController::class, 'markAllAsRead']);
+        Route::patch('notifications/mark-as-seen', [UserNotificationController::class, 'markAsSeen']);
         Route::patch('leave-form/cancel/{id}', [\App\Http\Controllers\Api\v1\User\LeaveFormUserController::class, 'cancel']);
 
         Route::patch('reset-password', [UserController::class, 'resetEmployeePassword']);
@@ -114,7 +129,7 @@ Route::namespace('Api\v1\User')->middleware(['language'])->prefix('1.0/user')->g
 
 
 // ADMIN ROUTER
-Route::namespace('Api\v1\Admin')->prefix('1.0/admin')->group(function () {
+Route::namespace('Api\v1\Admin')->middleware(['language'])->prefix('1.0/admin')->group(function () {
     Route::post('login', 'AuthController@login');
     Route::post('refresh-token', 'AuthController@refreshToken');
 

@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api\v1\User;
 use App\Http\Controllers\Api\v1\BaseController;
 use App\Http\Requests\User\StoreLeaveFormRequest;
 use App\Http\Requests\User\UpdateLeaveFormRequest;
-use App\Http\Services\Notifications\ExpoPushNotificationService;
 use App\Http\Services\v1\Admin\ModelHasApproversService;
 use App\Http\Services\v1\User\NumberOfDaysOffService;
 use App\Http\Services\v1\User\LeaveFormService;
@@ -31,6 +30,10 @@ class LeaveFormUserController extends BaseController
     /**
      * @param NumberOfDaysOffService $leaveFormService
      */
+
+     protected $notificationService;
+     protected $modelHasApproversService;
+
     public function __construct(
         LeaveFormService $leaveFormService,
         NumberOfDaysOffService $numberOfDaysOffService
