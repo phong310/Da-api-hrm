@@ -67,7 +67,7 @@ class TimeSheetService extends UserBaseService
         RequestChangeTimesheetInterface $requestChangeTimesheet,
         CompensatoryLeaveInterface $compensatoryLeave,
         // OvertimeSalaryCoefficientInterface $overtimeSalaryCoefficient,
-        // RequestChangeTimesheetService $requestChangeTimeSheetService
+        RequestChangeTimesheetService $requestChangeTimeSheetService
     ) {
         $this->leaveForm = $leaveForm;
         $this->overtime = $overtime;
@@ -76,7 +76,7 @@ class TimeSheetService extends UserBaseService
         $this->requestChangeTimesheet = $requestChangeTimesheet;
         $this->compensatoryLeave = $compensatoryLeave;
         // $this->overtimeSalaryCoefficient = $overtimeSalaryCoefficient;
-        // $this->requestChangeTimeSheetService = $requestChangeTimeSheetService;
+        $this->requestChangeTimeSheetService = $requestChangeTimeSheetService;
     }
 
     /**

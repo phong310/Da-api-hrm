@@ -42,12 +42,12 @@ class ManagerController extends BaseController
     public function __construct(
         ManagerLeaveService $managerLeaveService,
         ManagerOvertimeService $managerOvertimeService,
-        // ManagerRequestChangeTimesheetService $managerRequestChangeTimesheetService,
+        ManagerRequestChangeTimesheetService $managerRequestChangeTimesheetService,
         // ManagerCompensatoryLeaveService $managerCompensatoryLeaveService
     ) {
         $this->managerLeaveService = $managerLeaveService;
         $this->managerOvertimeService = $managerOvertimeService;
-        // $this->managerRequestChangeTimesheetService = $managerRequestChangeTimesheetService;
+        $this->managerRequestChangeTimesheetService = $managerRequestChangeTimesheetService;
         // $this->managerCompensatoryLeaveService = $managerCompensatoryLeaveService;
     }
 

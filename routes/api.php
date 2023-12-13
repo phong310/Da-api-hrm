@@ -106,6 +106,7 @@ Route::namespace('Api\v1\User')->middleware(['language'])->prefix('1.0/user')->g
         Route::get('setting-types-overtime', 'SettingTypesOvertimeController@index');
 
         Route::apiResources([
+            'request-change-timesheet' => 'RequestChangeTimeSheetController', 
             'working-day' => 'WorkingDayUserController',
             'timekeeping' => 'TimeKeepingController',
             'compensatory-working-day' => 'CompensatoryWorkingDayController',
@@ -149,6 +150,7 @@ Route::namespace('Api\v1\Admin')->middleware(['language'])->prefix('1.0/admin')-
             'title' => 'TitleController',
             'country' => 'CountryController',
             'working-day' => 'WorkingDayController',
+            'timesheet' => 'TimeSheetController',
         ]);
     });
 });
