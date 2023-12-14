@@ -55,7 +55,7 @@ class TimeKeepingService extends UserBaseService
      * @param TimeSheetInterface $timeSheet
      */
     public function __construct(
-        // TimeSheetService $timesheetService,
+        TimeSheetService $timesheetService,
         WorkingDayInterface $workingDay,
         HolidayInterface $holiday,
         LeaveFormInterface $leaveForm,
@@ -67,7 +67,7 @@ class TimeKeepingService extends UserBaseService
         $this->holiday = $holiday;
         $this->leaveForm = $leaveForm;
         $this->requestChangeTimeForm = $requestChangeTimeForm;
-        // $this->timesheetService = $timesheetService;
+        $this->timesheetService = $timesheetService;
         $this->timeSheet = $timeSheet;
         $this->timeSheetLog = $timeSheetLog;
     }

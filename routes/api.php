@@ -63,6 +63,7 @@ Route::namespace('Api\v1\User')->middleware(['language'])->prefix('1.0/user')->g
         // TimeKeeping
         Route::get('timekeeping/today', 'TimeKeepingController@todayTimeSheetLog');
         Route::get('timekeeping/check-has-timekeeping', 'TimeKeepingController@checkHasTimekeeping');
+        Route::get('timekeeping/total-time-in-month', 'TimeKeepingController@totalTimeInMonth');
 
         Route::get('day-off/remaining-days-off', 'NumberOfDaysOffUserController@remainingDaysOff');
 
@@ -121,6 +122,8 @@ Route::namespace('Api\v1\User')->middleware(['language'])->prefix('1.0/user')->g
         Route::get('kind-of-leave', 'KindOfLeaveController@index');
         Route::get('manager/approvers', 'ManagerController@getApprovers');
         Route::patch('manager/form/action/{id}', 'ManagerController@handleForm');
+
+
 
         
         Route::get('notifications', [UserNotificationController::class, 'index']);
