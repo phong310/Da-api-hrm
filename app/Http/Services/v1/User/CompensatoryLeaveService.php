@@ -4,50 +4,42 @@ namespace App\Http\Services\v1\User;
 
 use App\Http\Services\v1\Admin\CompanyService;
 use App\Http\Services\v1\Admin\TimeSheetService;
-use App\Models\Form\LeaveForm;
+use App\Models\Form\CompensatoryLeave;
 use App\Models\Notification;
-use App\Repositories\Interfaces\Forms\LeaveFormInterface;
+use App\Repositories\Interfaces\Forms\CompensatoryLeaveInterface;
 use App\Repositories\Interfaces\WorkingDayInterface;
 use App\Traits\CalculateTime;
 use App\Traits\FormSetting;
 use App\Traits\SystemSetting;
-use App\Transformers\LeaveAppInfoTransformer;
-use App\Transformers\LeaveFormTransformer;
+use App\Transformers\CompensatoryLeaveTransformer;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 
-class LeaveFormService extends UserBaseService
+class CompensatoryLeaveService extends UserBaseService
 {
     use SystemSetting;
     use FormSetting;
     use CalculateTime;
-    protected $leaveForm;
-    protected $numberOfDaysOff;
 
     /**
-     * @var NotificationService
+     * @var CompensatoryLeaveInterface
      */
+    private $compensatoryLeave;
     protected $notificationService;
-
-    /**
-     * Instantiate a new controller instance.
-     *
-     * @param LeaveFormInterface $leaveForm
-     */
-
     protected $companyService;
     protected $workingDay;
     protected $timeSheetService;
+
     public function __construct(
-        LeaveFormInterface $leaveForm,
-        NotificationService $notificationService,
+        CompensatoryLeaveInterface $compensatoryLeave,
+        NotificationService  $notificationService,
         CompanyService $companyService,
         WorkingDayInterface $workingDay,
         TimeSheetService $timeSheetService
     ) {
-        $this->leaveForm = $leaveForm;
+        $this->compensatoryLeave = $compensatoryLeave;
         $this->notificationService = $notificationService;
         $this->companyService = $companyService;
         $this->workingDay = $workingDay;
@@ -60,7 +52,7 @@ class LeaveFormService extends UserBaseService
      */
     public function setModel()
     {
-        $this->model = new LeaveForm();
+        $this->model = new CompensatoryLeave();
     }
 
     /**
@@ -72,7 +64,6 @@ class LeaveFormService extends UserBaseService
         $full_name = $this->request->get('approver');
         $kind_leave_id = $this->request->get('kind_of_leave');
         $status = $this->request->get('status');
-        $is_salary = $this->request->get('is_salary');
         $startTime = $this->request->get('start_time');
         $endTime = $this->request->get('end_time');
         $yearMonth = $this->request->get('month');
@@ -92,28 +83,16 @@ class LeaveFormService extends UserBaseService
                 });
             });
         }
-
         if (!is_null($status)) {
             $this->query->where('status', $status);
         }
 
-        if (!is_null($is_salary)) {
-            $this->query->where('is_salary', $is_salary);
-        }
-
-        if (!is_null($startTime) && is_null($endTime)) {
+        if (!is_null($startTime)) {
             $this->query->whereDate('start_time', $startTime);
         }
 
-        if (!is_null($endTime) && is_null($startTime)) {
+        if (!is_null($endTime)) {
             $this->query->whereDate('end_time', $endTime);
-        }
-
-        if (!is_null($startTime) && !is_null($endTime)) {
-            $this->query->where(function ($query) use ($startTime, $endTime) {
-                $query->whereBetween('start_time', [$startTime, $endTime])
-                    ->orWhereBetween('end_time', [$startTime, $endTime]);
-            });
         }
 
         if (!is_null($yearMonth)) {
@@ -142,8 +121,8 @@ class LeaveFormService extends UserBaseService
             $totalTimeOff = $this->totalTimeOff($c['start_time'], $c['end_time']);
             $c['total_time_off'] = $totalTimeOff;
         }
-        return collect($collection)->transformWith(new LeaveFormTransformer())
-            ->paginateWith(new IlluminatePaginatorAdapter($data));;
+        return collect($collection)->transformWith(new CompensatoryLeaveTransformer())
+            ->paginateWith(new IlluminatePaginatorAdapter($data));
     }
 
     /**
@@ -157,20 +136,6 @@ class LeaveFormService extends UserBaseService
         return $this->customDataApproval($data);
     }
 
-    public function totalTimeOff($startTime, $endTime)
-    {
-        $company_id = Auth::user()->company_id;
-        $setting = $this->companyService->getSettingOfCompany($company_id);
-        $totalTime = $this->convertData($startTime, $endTime, [], $setting);
-        $totalTimeOff = 0;
-
-        foreach ($totalTime as $t) {
-            $totalTimeOff += $t['time_off'];
-        }
-
-        return $totalTimeOff;
-    }
-
     /**
      * @return mixed
      */
@@ -181,61 +146,6 @@ class LeaveFormService extends UserBaseService
             ->with('approvers.employee.information');
     }
 
-    public function hasPermApproval($employeeId)
-    {
-        where(function ($q) use ($employeeId) {
-            $q->whereHas('approvers', function ($q) use ($employeeId) {
-                $q->where(['approve_employee_id' => $employeeId]);
-            });
-        });
-    }
-
-    public function getListLeaveAppInformation(Request $request)
-    {
-        $user = Auth::user();
-        $companyId = $user->company_id;
-        $per_page = $this->request->per_page;
-        $today = Carbon::now();
-        $year = $today->year;
-        $month = $today->month;
-        if ($this->request->get('month')) {
-            $yearMonth = explode('-', $this->request->get('month'));
-            $month = $yearMonth[1];
-            $year = $yearMonth[0];
-        }
-
-        $listApplication = LeaveForm::query()
-        ->where('company_id', $companyId)
-        ->where(function ($query) use ($year, $month) {
-            $query->where(function ($q) {
-                $q->where('status', LeaveForm::STATUS['PROCESSING'])
-                ->orWhere('status', LeaveForm::STATUS['APPROVED']);
-            })
-            ->where(function ($q) use ($year, $month) {
-                $q->whereYear('created_at', '=', $year)
-                ->whereMonth('start_time', '=', $month)
-                ->orWhereMonth('end_time', '=', $month);
-            });
-        })
-            ->whereNotIn('status', [LeaveForm::STATUS['REJECTED'], LeaveForm::STATUS['CANCEL']])
-            ->with(['employee.personalInformation'])
-            ->with(['kind_of_leave'])
-            ->orderBy('created_at', 'desc')
-            ->paginate($per_page ?: 20);
-
-
-        $listApplication = $this->setTransformLeaveAppInformation($listApplication);
-
-        return $listApplication;
-    }
-
-    public function setTransformLeaveAppInformation($data)
-    {
-        $collection = $data->getCollection();
-        $paginated = collect($collection)->transformWith(new LeaveAppInfoTransformer())
-            ->paginateWith(new IlluminatePaginatorAdapter($data));
-        return $paginated;
-    }
 
     /**
      * @param Request $request
@@ -244,8 +154,8 @@ class LeaveFormService extends UserBaseService
      */
     public function update(Request $request, $id)
     {
-        $leaveForm = $this->leaveForm->showByEmployee($id);
-        if (!$leaveForm) {
+        $compensatoryLeave = $this->compensatoryLeave->showByEmployee($id);
+        if (!$compensatoryLeave) {
             return response()->json([
                 'message' => __('message.not_found'),
             ], 404);
@@ -253,10 +163,10 @@ class LeaveFormService extends UserBaseService
         try {
 
             $data = $request->only($this->model->getFillable());
-            $leaveForm->fill($data);
-            $leaveForm->save();
+            $compensatoryLeave->fill($data);
+            $compensatoryLeave->save();
 
-            return $leaveForm;
+            return $compensatoryLeave;
         } catch (\Exception $e) {
             return $this->errorResponse();
         }
@@ -286,32 +196,23 @@ class LeaveFormService extends UserBaseService
             'status' => 0,
         ];
 
-        if ($request->is_salary) {
-            $data['is_salary'] = LeaveForm::PAID_LEAVE['YES'];
-        } else {
-            $data['is_salary'] = LeaveForm::PAID_LEAVE['NO'];
-        }
-        //    $data['number_of_days_off_id'] = $numberDaysOff->id;
-
-        $leaveForm = LeaveForm::create($data);
-
-        return $leaveForm;
+        return $this->compensatoryLeave->store($data);
     }
 
     public function cancel($id)
     {
 
-        $leaveForm = LeaveForm::find($id);
+        $compensatoryLeaveForm = CompensatoryLeave::find($id);
 
-        if ($leaveForm->status === LeaveForm::STATUS['PROCESSING']) {
+        if ($compensatoryLeaveForm->status === CompensatoryLeave::STATUS['PROCESSING']) {
             $this->notificationService->removeNotiOfApprovers($id, Notification::MODEL_TYPE['LEAVE']);
-            $leaveForm->status = LeaveForm::STATUS['CANCEL'];
-            $leaveForm->save();
+            $compensatoryLeaveForm->status = CompensatoryLeave::STATUS['CANCEL'];
+            $compensatoryLeaveForm->save();
 
             return response()->json([
                 'message' => __('message.update_success'),
                 'data' => [
-                    'leaveForm' => $leaveForm
+                    'compensatoryLeaveForm' => $compensatoryLeaveForm
                 ],
             ], 200);
         } else {
@@ -321,28 +222,17 @@ class LeaveFormService extends UserBaseService
         }
     }
 
-    public function getProcessLeaveForm()
+    public function totalTimeOff($startTime, $endTime)
     {
-        $employee_id = Auth::user()->employee_id;
-        $data = $this->leaveForm->queryFormHasProcessing($employee_id);
+        $company_id = Auth::user()->company_id;
+        $setting = $this->companyService->getSettingOfCompany($company_id);
+        $totalTime = $this->convertData($startTime, $endTime, [], $setting);
+        $totalTimeOff = 0;
 
-        return $data->map(function ($item) {
-            return [
-                'start_time' => $item->start_time,
-                'end_time' => $item->end_time,
-            ];
-        });
-    }
-
-    public function calculateLeaveFormProcess()
-    {
-        $data = $this->getProcessLeaveForm();
-        $totalLeaveformProcess = 0;
-
-        foreach ($data as $d) {
-            $cal = $this->totalTimeOff($d['start_time'], $d['end_time']);
-            $totalLeaveformProcess += $cal;
+        foreach ($totalTime as $t) {
+            $totalTimeOff += $t['time_off'];
         }
-        return $totalLeaveformProcess;
+
+        return $totalTimeOff;
     }
 }

@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\v1\User\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\v1\User\CompanyUserController;
+use App\Http\Controllers\Api\v1\User\LeaveFormUserController;
 use App\Http\Controllers\Api\v1\User\NotificationController as UserNotificationController;
 
 
@@ -103,6 +104,7 @@ Route::namespace('Api\v1\User')->middleware(['language'])->prefix('1.0/user')->g
             ]);
         });
         Route::get('holiday', 'HolidayController@index');
+        Route::get('/leave-form/information', [LeaveFormUserController::class, 'getListLeaveAppInformation']);
         Route::get('setting-types-overtime', 'SettingTypesOvertimeController@index');
 
         Route::apiResources([
@@ -113,6 +115,7 @@ Route::namespace('Api\v1\User')->middleware(['language'])->prefix('1.0/user')->g
             'manager/form' => 'ManagerController',
             'leave-form' => 'LeaveFormUserController',
             'overtime-form' => 'OverTimeController',
+            'compensatory-leave' => 'CompensatoryLeaveController',
         ]);
         // Loại nghỉ phép
         Route::get('kind-of-leave', 'KindOfLeaveController@index');
@@ -126,7 +129,11 @@ Route::namespace('Api\v1\User')->middleware(['language'])->prefix('1.0/user')->g
         Route::patch('notifications/mark-as-read/{id}', [UserNotificationController::class, 'markAsRead']);
         Route::patch('notifications/mark-all-as-read', [UserNotificationController::class, 'markAllAsRead']);
         Route::patch('notifications/mark-as-seen', [UserNotificationController::class, 'markAsSeen']);
+
+        Route::patch('overtime-form/cancel/{id}', [\App\Http\Controllers\Api\v1\User\OverTimeController::class, 'cancel']);
         Route::patch('leave-form/cancel/{id}', [\App\Http\Controllers\Api\v1\User\LeaveFormUserController::class, 'cancel']);
+        Route::patch('request-change-timesheet/cancel/{id}', [\App\Http\Controllers\Api\v1\User\RequestChangeTimeSheetController::class, 'cancel']);
+        Route::patch('compensatory-form/cancel/{id}', [\App\Http\Controllers\Api\v1\User\CompensatoryLeaveController::class, 'cancel']);
 
         Route::patch('reset-password', [UserController::class, 'resetEmployeePassword']);
     });

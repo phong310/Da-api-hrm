@@ -43,12 +43,12 @@ class ManagerController extends BaseController
         ManagerLeaveService $managerLeaveService,
         ManagerOvertimeService $managerOvertimeService,
         ManagerRequestChangeTimesheetService $managerRequestChangeTimesheetService,
-        // ManagerCompensatoryLeaveService $managerCompensatoryLeaveService
+        ManagerCompensatoryLeaveService $managerCompensatoryLeaveService
     ) {
         $this->managerLeaveService = $managerLeaveService;
         $this->managerOvertimeService = $managerOvertimeService;
         $this->managerRequestChangeTimesheetService = $managerRequestChangeTimesheetService;
-        // $this->managerCompensatoryLeaveService = $managerCompensatoryLeaveService;
+        $this->managerCompensatoryLeaveService = $managerCompensatoryLeaveService;
     }
 
     /**

@@ -4,42 +4,38 @@ namespace App\Http\Controllers\Api\v1\User;
 
 use App\Http\Controllers\Api\v1\BaseController;
 use App\Http\Requests\User\StoreLeaveFormRequest;
+use App\Http\Requests\User\StoreOrUpdateCompensatoryLeaveRequest;
 use App\Http\Requests\User\UpdateLeaveFormRequest;
+use App\Http\Services\Notifications\ExpoPushNotificationService;
 use App\Http\Services\v1\Admin\ModelHasApproversService;
-use App\Http\Services\v1\User\NumberOfDaysOffService;
-use App\Http\Services\v1\User\LeaveFormService;
+use App\Http\Services\v1\User\CompensatoryLeaveService;
 use App\Http\Services\v1\User\NotificationService;
-use App\Models\Form\LeaveForm;
 use App\Models\Notification;
 use App\Models\TokenFcmDevices;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
-class LeaveFormUserController extends BaseController
+class CompensatoryLeaveController extends BaseController
 {
     protected $expoService;
     /**
-     * @param LeaveFormService $leaveFormService
+     * @var ModelHasApproversService
      */
-
-    protected $numberOfDaysOff;
+    private $modelHasApproversService;
     /**
-     * @param NumberOfDaysOffService $leaveFormService
+     * @var NotificationService
      */
+    private $notificationService;
 
-     protected $notificationService;
-     protected $modelHasApproversService;
-
+    /**
+     * @param CompensatoryLeaveService $compensatoryLeaveService
+     */
     public function __construct(
-        LeaveFormService $leaveFormService,
-        NumberOfDaysOffService $numberOfDaysOffService
+        CompensatoryLeaveService $compensatoryLeaveService,
     ) {
-        $this->numberOfDaysOff = $numberOfDaysOffService;
-        $this->service = $leaveFormService;
+        $this->service = $compensatoryLeaveService;
         $this->modelHasApproversService = new ModelHasApproversService();
         $this->notificationService = new NotificationService();
     }
@@ -48,38 +44,27 @@ class LeaveFormUserController extends BaseController
      * @param StoreLeaveFormRequest $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function store(StoreLeaveFormRequest $request)
+    public function store(StoreOrUpdateCompensatoryLeaveRequest $request): \Illuminate\Http\JsonResponse
     {
-        $employee_id = Auth::user()->employee_id;
-        $getDayOff = $this->numberOfDaysOff->getNumberOfDaysOffOfEmployee($employee_id);
-        $numDayOff = $getDayOff['annual_leave'] - $getDayOff['leave_form'];
-        $total = $this->service->totalTimeOff($request->start_time, $request->end_time);
-        $leaveFormProcess = $this->service->calculateLeaveFormProcess();
-        $isSalary = $request->is_salary;
         try {
             DB::beginTransaction();
-            if ($isSalary === LeaveForm::PAID_LEAVE['YES']) {
-                if ($numDayOff - ($leaveFormProcess + $total) < LeaveForm::KEY_SCREEN['AWAITING_CONFIRM']) {
-                    return response()->json([
-                        'message' => __('message.not_create_leave_form'),
-                    ], 403);
-                }
-            }
-            $leaveForm = $this->service->store($request);
-            $approvers = $this->modelHasApproversService->store($request, $leaveForm);
+            $compensatoryLeave = $this->service->store($request);
+            $approvers = $this->modelHasApproversService->store($request, $compensatoryLeave);
             foreach ($approvers as $approver) {
                 $data = [
                     'model_id' => $approver['model_id'],
-                    'model_type' => Notification::MODEL_TYPE['LEAVE'],
+                    'model_type' => Notification::MODEL_TYPE['COMPENSATORY_LEAVE'],
                     'type' => Notification::TYPE['CREAT'],
                     'content' => 'CREAT',
                 ];
                 $this->notificationService->store($data, $approver);
             }
+
             DB::commit();
+
             return response()->json([
                 'message' => __('message.created_success'),
-                'data' => $leaveForm,
+                'data' => $compensatoryLeave,
             ], 200);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -94,21 +79,22 @@ class LeaveFormUserController extends BaseController
      * @param $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update(UpdateLeaveFormRequest $request, $id)
+    public function update(StoreOrUpdateCompensatoryLeaveRequest $request, $id): \Illuminate\Http\JsonResponse
     {
         try {
             DB::beginTransaction();
 
-            $leaveForm = $this->service->update($request, $id);
-            $oldIdsApprovers = Arr::pluck($leaveForm->approvers, 'approve_employee_id');
-            $approvers = $this->modelHasApproversService->update($request, $leaveForm);
-            $this->notificationService->updateApprover($approvers, $oldIdsApprovers, Notification::MODEL_TYPE['LEAVE']);
+            $compensatoryLeave = $this->service->update($request, $id);
+            $oldIdsApprovers = Arr::pluck($compensatoryLeave->approvers, 'approve_employee_id');
+            $approvers = $this->modelHasApproversService->update($request, $compensatoryLeave);
+
+            $this->notificationService->updateApprover($approvers, $oldIdsApprovers, Notification::MODEL_TYPE['COMPENSATORY_LEAVE']);
 
             DB::commit();
 
             return response()->json([
                 'message' => __('message.update_success'),
-                'data' => $leaveForm,
+                'data' => $compensatoryLeave,
                 'model' => $approvers,
             ], 200);
         } catch (\Exception $e) {
@@ -118,12 +104,6 @@ class LeaveFormUserController extends BaseController
             return $this->service->errorResponse();
         }
     }
-
-    public function getListLeaveAppInformation(Request $request)
-    {
-        return $this->service->getListLeaveAppInformation($request);
-    }
-
 
     public function cancel($id)
     {
