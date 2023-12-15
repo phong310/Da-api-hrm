@@ -63,7 +63,12 @@ Route::namespace('Api\v1\User')->middleware(['language'])->prefix('1.0/user')->g
         // TimeKeeping
         Route::get('timekeeping/today', 'TimeKeepingController@todayTimeSheetLog');
         Route::get('timekeeping/check-has-timekeeping', 'TimeKeepingController@checkHasTimekeeping');
+        Route::get('dashboard/calculate', 'DashboardController@index');
         Route::get('timekeeping/total-time-in-month', 'TimeKeepingController@totalTimeInMonth');
+
+        Route::get('timesheets/{month}', 'TimeSheetController@employeesByMonth');
+        Route::get('timesheet/check-has-form-by-date/{date}', 'TimeSheetController@checkHasFormByDate');
+        Route::get('timesheet-log/{month}', 'TimeSheetLogController@employeesByMonth');
 
         Route::get('day-off/remaining-days-off', 'NumberOfDaysOffUserController@remainingDaysOff');
 

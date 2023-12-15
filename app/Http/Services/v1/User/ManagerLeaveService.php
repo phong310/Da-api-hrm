@@ -79,8 +79,8 @@ class ManagerLeaveService extends UserBaseService
      */
     public function __construct(
         ModelHasApproversService $modelHasApproversService,
-        // LeaveFormHasTimesheetService $leaveFormHasTimesheetService,
-        // TimeSheetService $timesheetService,
+        LeaveFormHasTimesheetService $leaveFormHasTimesheetService,
+        TimeSheetService $timesheetService,
         CompanyService $companyService,
         NotificationService $notificationService,
         WorkingDayInterface $workingDay,
@@ -89,8 +89,8 @@ class ManagerLeaveService extends UserBaseService
         LeaveFormInterface $leaveForm,
     ) {
         $this->modelHasApproversService = $modelHasApproversService;
-        // $this->leaveFormHasTimesheetService = $leaveFormHasTimesheetService;
-        // $this->timesheetService = $timesheetService;
+        $this->leaveFormHasTimesheetService = $leaveFormHasTimesheetService;
+        $this->timesheetService = $timesheetService;
         $this->companyService = $companyService;
         $this->workingDay = $workingDay;
         $this->notificationService = $notificationService;

@@ -63,12 +63,12 @@ class TimeKeepingService extends UserBaseService
         TimeSheetInterface $timeSheet,
         TimeSheetLogInterface $timeSheetLog
     ) {
+        $this->timesheetService = $timesheetService;
         $this->workingDay = $workingDay;
         $this->holiday = $holiday;
         $this->leaveForm = $leaveForm;
-        $this->requestChangeTimeForm = $requestChangeTimeForm;
-        $this->timesheetService = $timesheetService;
         $this->timeSheet = $timeSheet;
+        $this->requestChangeTimeForm = $requestChangeTimeForm;
         $this->timeSheetLog = $timeSheetLog;
     }
 
@@ -114,7 +114,7 @@ class TimeKeepingService extends UserBaseService
 
         $result = $this->timeSheet->getTimesheetInDate($request->start_date, $request->end_date, $employeeId);
 
-        return $result;
+        return  $this->setTransformersNotPaginate($result);
     }
 
     public function getTotalTimeInMonth(Request $request): \Illuminate\Http\JsonResponse
@@ -273,46 +273,46 @@ class TimeKeepingService extends UserBaseService
         }
     }
 
-    // public function haversineDistance($lat1, $lon1, $lat2, $lon2)
-    // {
-    //     // lat ~ 20, lon ~ 100
+    public function haversineDistance($lat1, $lon1, $lat2, $lon2)
+    {
+        // lat ~ 20, lon ~ 100
 
-    //     // convert deg to radian
-    //     $lat1 = deg2rad($lat1);
-    //     $lon1 = deg2rad($lon1);
-    //     $lat2 = deg2rad($lat2);
-    //     $lon2 = deg2rad($lon2);
+        // convert deg to radian
+        $lat1 = deg2rad($lat1);
+        $lon1 = deg2rad($lon1);
+        $lat2 = deg2rad($lat2);
+        $lon2 = deg2rad($lon2);
 
-    //     // Radius of the Earth (unit meters)
-    //     $earthRadius = 6371000; // Áp dụng cho biểu đồ WGS84
+        // Radius of the Earth (unit meters)
+        $earthRadius = 6371000; // Áp dụng cho biểu đồ WGS84
 
-    //     // Calculate the differences between coordinates
-    //     $latDiff = $lat2 - $lat1;
-    //     $lonDiff = $lon2 - $lon1;
+        // Calculate the differences between coordinates
+        $latDiff = $lat2 - $lat1;
+        $lonDiff = $lon2 - $lon1;
 
-    //     //Use the haversine formula to calculate distance
-    //     $a = sin($latDiff / 2) * sin($latDiff / 2) + cos($lat1) * cos($lat2) * sin($lonDiff / 2) * sin($lonDiff / 2);
-    //     $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
-    //     $distance = $earthRadius * $c;
+        //Use the haversine formula to calculate distance
+        $a = sin($latDiff / 2) * sin($latDiff / 2) + cos($lat1) * cos($lat2) * sin($lonDiff / 2) * sin($lonDiff / 2);
+        $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
+        $distance = $earthRadius * $c;
 
-    //     return $distance;
-    // }
+        return $distance;
+    }
 
-    // public function uploadImage($employee_id, $image)
-    // {
-    //     $image_url = "";
-    //     $folder_name = 'timekeeping/' . $employee_id;
+    public function uploadImage($employee_id, $image)
+    {
+        $image_url = "";
+        $folder_name = 'timekeeping/' . $employee_id;
 
-    //     if (request()->hasFile('image')) {
-    //         Storage::disk('public')->delete($image);
-    //         $image_url = Storage::disk('public')->put(
-    //             $folder_name,
-    //             $image
-    //         );
-    //     }
+        if (request()->hasFile('image')) {
+            Storage::disk('public')->delete($image);
+            $image_url = Storage::disk('public')->put(
+                $folder_name,
+                $image
+            );
+        }
 
-    //     return $image_url;
-    // }
+        return $image_url;
+    }
 
     public function calculateTotalAllTimeWork($date)
     {

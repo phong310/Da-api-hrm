@@ -132,7 +132,6 @@ class ManagerOvertimeService extends UserBaseService
         $screenKey = $this->request->key_screen;
         $this->query = $this->overtime->queryFilter($this->query, $month, $screenKey);
     }
-
     /**
      * @param Request $request
      * @param $id
@@ -171,8 +170,6 @@ class ManagerOvertimeService extends UserBaseService
             'receiver_id' => $form['employee_id'],
         ];
 
-
-
         $statusOfApprover = OverTime::STATUS['REJECTED'];
 
         switch ($action) {
@@ -180,7 +177,8 @@ class ManagerOvertimeService extends UserBaseService
                 $statusOfApprover = OverTime::STATUS['APPROVED'];
 
                 $dataNoti['type'] = Notification::TYPE['ACCEPT'];
-                $dataNoti['content'] = 'ACCEPT';        break;
+                $dataNoti['content'] = 'ACCEPT';
+                break;
             case ManagerController::ACTION['REJECT-AFTER-ACCEPT'] && $form->status == OverTime::STATUS['APPROVED']:
                 $dataNoti['content'] = 'REJECT AFTER ACCEPT';
 
@@ -198,6 +196,7 @@ class ManagerOvertimeService extends UserBaseService
         }
         $form->save();
         $dataNoti = $this->notificationService->store($dataNoti);
+        $dataPushExpo['notification_id'] = $dataNoti['id'];
         $this->modelHasApproversService->updateStatus($id, Auth::user()->employee_id, get_class($form), $statusOfApprover);
 
         $this->afterChangeStatusForm($form, $companyId, $action);
@@ -231,7 +230,6 @@ class ManagerOvertimeService extends UserBaseService
                 break;
             case ManagerController::ACTION['REJECT-AFTER-ACCEPT']:
                 $this->timesheetService->updateOrCreateWhenApprovalOTForm($form, $companyId, ManagerController::ACTION['REJECT-AFTER-ACCEPT']);
-
                 break;
             default:
                 break;

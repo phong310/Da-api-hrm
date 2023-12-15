@@ -28,6 +28,7 @@ use App\Repositories\Interfaces\UserInterface;
 use App\Repositories\UserRepository;
 use App\Repositories\RoleRepository;
 use App\Repositories\Interfaces\RoleInterface;
+use App\Repositories\Interfaces\SettingLeaveDayInterface;
 use App\Repositories\Interfaces\SettingTypesOvertimeInterface;
 use App\Repositories\Interfaces\TimeSheetInterface;
 use App\Repositories\Interfaces\TimeSheetLogInterface;
@@ -41,6 +42,7 @@ use App\Repositories\OvertimeRepository;
 use App\Repositories\OvertimeSalaryCoefficientRepository;
 use App\Repositories\PositionRepositiory;
 use App\Repositories\RequestChangeTimesheetRepository;
+use App\Repositories\SettingLeaveDayRepository;
 use App\Repositories\SettingTypesOvertimeRepository;
 use App\Repositories\TimeSheetLogRepository;
 use App\Repositories\TimeSheetRepository;
@@ -76,7 +78,8 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(KindOfLeaveInterface::class, KindOfLeaveRepository::class);
         $this->app->bind(OvertimeInterface::class, OvertimeRepository::class);
         $this->app->bind(SettingTypesOvertimeInterface::class, SettingTypesOvertimeRepository::class);
-        // $this->app->bind(OvertimeSalaryCoefficientInterface::class, OvertimeSalaryCoefficientRepository::class);
+        $this->app->bind(SettingLeaveDayInterface::class, SettingLeaveDayRepository::class);
+        $this->app->bind(OvertimeSalaryCoefficientInterface::class, OvertimeSalaryCoefficientRepository::class);
     }
 
     /**

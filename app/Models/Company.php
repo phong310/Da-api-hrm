@@ -41,6 +41,10 @@ class Company extends Model
         'register_date',
     ];
 
+    const QUANTITY_COMPANY = [
+        'QUANTITY' => 100
+    ];
+    
     public $appends = ['logo_url'];
 
     public function getLogoUrlAttribute()

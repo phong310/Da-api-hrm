@@ -23,6 +23,10 @@ class Employee extends Model
         'FULL_TIME_EMPLOYEE' => 1,
     ];
 
+    public const QUANTITY_EMPLOYEE = [
+        'QUANTITY' => 100
+    ];
+
     protected $fillable = [
         'card_number',
         'employee_code',

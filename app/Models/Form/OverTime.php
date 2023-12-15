@@ -54,8 +54,8 @@ class OverTime extends Model
         return $this->morphMany(ModelHasApprovers::class, 'model');
     }
 
-    // public function overtimeSalaryCoefficients()
-    // {
-    //     return $this->hasMany(OvertimeSalaryCoefficient::class, 'overtime_id');
-    // }
+    public function overtimeSalaryCoefficients()
+    {
+        return $this->hasMany(OvertimeSalaryCoefficient::class, 'overtime_id');
+    }
 }

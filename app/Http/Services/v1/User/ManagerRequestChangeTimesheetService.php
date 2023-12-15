@@ -268,10 +268,10 @@ class ManagerRequestChangeTimesheetService extends UserBaseService
                         'end_time' => $form['check_out_time'],
                     ];
 
-                    // if ($workingDay) { 
-                    //     $timesheet = $this->timesheetService->updateOrCreateData($data, $workingDay, $setting, 'schedule', true);
-                    //     $form->timesheet_id = $timesheet->id;
-                    // }
+                    if ($workingDay) { 
+                        $timesheet = $this->timesheetService->updateOrCreateData($data, $workingDay, $setting, 'schedule', true);
+                        $form->timesheet_id = $timesheet->id;
+                    }
                 }
                 break;
             case ManagerController::ACTION['REJECT-AFTER-ACCEPT']:
