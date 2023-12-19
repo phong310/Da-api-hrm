@@ -164,6 +164,7 @@ class EmployeeService extends UserBaseService
     public function getListByCompany()
     {
         $companyId = $this->getCompanyId();
+        $this->query->select("employees.*");
 
         $employeeName = $this->request->get('employee_name');
         if ($employeeName) {
@@ -175,6 +176,7 @@ class EmployeeService extends UserBaseService
         }
 
         $employees = $this->query->where(['company_id' => $companyId])
+            // ->limit(20)
             ->join('personal_information', 'employees.personal_information_id', '=', 'personal_information.id')
             ->with(['personalInformation.addresses', 'branch', 'position'])
             ->orderByRaw("TRIM(CONCAT(personal_information.first_name, ' ', personal_information.last_name)) asc")

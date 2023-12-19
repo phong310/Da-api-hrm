@@ -38,13 +38,13 @@ class DashboardService extends UserBaseService
         LeaveFormInterface $leaveForm,
         RequestChangeTimesheetInterface $requestChangeTimesheet,
         CompensatoryLeaveInterface $compensatoryLeave,
-        // LaborContractInterface $laborContractInterFace,
+        LaborContractInterface $laborContractInterFace,
     ) {
         $this->overtime = $overtime;
         $this->leaveForm = $leaveForm;
         $this->requestChangeTimesheet = $requestChangeTimesheet;
         $this->compensatoryLeaveForm = $compensatoryLeave;
-        // $this->laborContractInterface = $laborContractInterFace;
+        $this->laborContractInterface = $laborContractInterFace;
         parent::__construct();
     }
 
@@ -58,8 +58,8 @@ class DashboardService extends UserBaseService
         $today = Carbon::now();
         $year = $today->year;
         $month = $today->month;
-        // $expire = LaborContract::STATUS['EXPIRTION'];
-        // $active = LaborContract::STATUS['ACTIVE'];
+        $expire = LaborContract::STATUS['EXPIRTION'];
+        $active = LaborContract::STATUS['ACTIVE'];
 
         if ($request->month) {
             $yearMonth = explode('-', $request->month);
@@ -83,9 +83,9 @@ class DashboardService extends UserBaseService
         $amount['all_over_time_app'] = $this->totalOverTimeManagement($request->month);
         $amount['all_request_change_timesheet_app'] = $this->totalRCTManagement($request->month);
         $amount['all_total_application'] = $amount['all_leave_app'] + $amount['all_over_time_app'] + $amount['all_request_change_timesheet_app'];
-        // $amount['all_total_labor_contract'] = $this->laborContractInterface->checkExpiringContract(null)->count();
-        // $amount['expired_contract'] = $this->laborContractInterface->checkExpiringContract($expire)->count();
-        // $amount['almost_expired_contract'] = $this->laborContractInterface->checkExpiringContract($active)->count();
+        $amount['all_total_labor_contract'] = $this->laborContractInterface->checkExpiringContract(null)->count();
+        $amount['expired_contract'] = $this->laborContractInterface->checkExpiringContract($expire)->count();
+        $amount['almost_expired_contract'] = $this->laborContractInterface->checkExpiringContract($active)->count();
 
         return response()->json($amount);
     }

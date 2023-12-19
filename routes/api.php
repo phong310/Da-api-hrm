@@ -109,6 +109,10 @@ Route::namespace('Api\v1\User')->middleware(['language'])->prefix('1.0/user')->g
                 
             ]);
         });
+        Route::get('labor-contract/user', 'LaborContractController@getEmployeeLabor');
+        Route::get('labor-contract/user/{id}', 'LaborContractController@showMySelf');
+        Route::get('labor-contract/count-by-employee/{employeeId}', 'LaborContractController@countByEmployee');
+        Route::get('labor-contract/has-labor-contract-active/{employeeId}', 'LaborContractController@hasLaborContractActive');
         Route::get('holiday', 'HolidayController@index');
         Route::get('/leave-form/information', [LeaveFormUserController::class, 'getListLeaveAppInformation']);
         Route::get('setting-types-overtime', 'SettingTypesOvertimeController@index');
@@ -122,6 +126,9 @@ Route::namespace('Api\v1\User')->middleware(['language'])->prefix('1.0/user')->g
             'leave-form' => 'LeaveFormUserController',
             'overtime-form' => 'OverTimeController',
             'compensatory-leave' => 'CompensatoryLeaveController',
+            'labor-contract' => 'LaborContractController',
+            'labor-contract-type' => 'LaborContractTypeController',
+            'allowance' => 'AllowanceController',
         ]);
         // Loại nghỉ phép
         Route::get('kind-of-leave', 'KindOfLeaveController@index');
@@ -158,6 +165,7 @@ Route::namespace('Api\v1\Admin')->middleware(['language'])->prefix('1.0/admin')-
 
         Route::get('settings/get-by-company/{companyId}', 'SettingController@getByCompanyId');
         Route::get('setting-types-overtime/show-by-type/{type}', 'SettingTypesOvertimeController@showByType');
+        Route::get('salary-tax-coefficient-settings/get-by-company', 'SettingSalaryTaxCoefficientController@showSettingCoefficientByCompany');
 
 
         Route::apiResources([
