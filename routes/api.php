@@ -155,6 +155,11 @@ Route::namespace('Api\v1\Admin')->middleware(['language'])->prefix('1.0/admin')-
 
 
     Route::middleware(['auth:api'])->group(function () {
+
+        Route::get('settings/get-by-company/{companyId}', 'SettingController@getByCompanyId');
+        Route::get('setting-types-overtime/show-by-type/{type}', 'SettingTypesOvertimeController@showByType');
+
+
         Route::apiResources([
             'settings' => 'SettingController',
             'role' => 'RoleController',
@@ -166,6 +171,14 @@ Route::namespace('Api\v1\Admin')->middleware(['language'])->prefix('1.0/admin')-
             'country' => 'CountryController',
             'working-day' => 'WorkingDayController',
             'timesheet' => 'TimeSheetController',
+            'kind-of-leave' => 'KindOfLeaveController',
+            'companies' => 'CompanyController',
+            'holiday' => 'HolidayController',
+            'days-in-week' => 'DaysInWeekController',
+            'compensatory-working-day' => 'CompensatoryWorkingDayController',
+            'setting-types-overtime' => 'SettingTypesOvertimeController',
         ]);
+
+        Route::post('companies/{company_id}/info', 'CompanyController@updateInfo');
     });
 });

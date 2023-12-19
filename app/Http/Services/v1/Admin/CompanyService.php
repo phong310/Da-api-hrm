@@ -113,7 +113,11 @@ class CompanyService extends BaseService
         $filename = $company->logo;
         $folder_name = '/companies/' . $company->id . '/logos';
         if (request()->hasFile('logo')) {
-            Storage::disk('public')->delete($filename);
+            if ($filename !== null) {
+                Storage::disk('public')->delete($filename);
+            }
+
+            // Storage::disk('public')->delete($filename);
             $logo = $this->request->file('logo');
             $filename = Storage::disk('public')->put(
                 $folder_name,
@@ -122,6 +126,23 @@ class CompanyService extends BaseService
         }
 
         return $filename;
+    }
+
+    public function updateInfo(Request $request, $company_id)
+    {
+        $data = $request->only($this->model->getFillable());
+        $company = $this->query->find($company_id);
+
+        if ($request->logo) {
+            $logo = $this->uploadImage($company, $request->logo);
+            $data['logo'] = $logo;
+        }
+
+        $company->update($data);
+        return response()->json([
+            'message' => __('message.update_success'),
+            'data' => array_merge($data, ['id' => $company_id]),
+        ]);
     }
 
     /**

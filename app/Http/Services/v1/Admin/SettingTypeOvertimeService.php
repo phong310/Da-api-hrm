@@ -27,10 +27,10 @@ class SettingTypeOvertimeService extends BaseService
      */
     public function __construct(
         SettingTypesOvertimeInterface           $settingTypesOvertime,
-        // SettingOvertimeSalaryCoefficientService $overtimeSalaryCoefficientService
+        SettingOvertimeSalaryCoefficientService $overtimeSalaryCoefficientService
     ) {
         $this->settingTypesOvertime = $settingTypesOvertime;
-        // $this->overtimeSalaryCoefficientService = $overtimeSalaryCoefficientService;
+        $this->overtimeSalaryCoefficientService = $overtimeSalaryCoefficientService;
         parent::__construct();
     }
 
