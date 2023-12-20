@@ -185,6 +185,9 @@ Route::namespace('Api\v1\Admin')->middleware(['language'])->prefix('1.0/admin')-
             'days-in-week' => 'DaysInWeekController',
             'compensatory-working-day' => 'CompensatoryWorkingDayController',
             'setting-types-overtime' => 'SettingTypesOvertimeController',
+            'labor-contract-type' => 'LaborContractTypeController',
+            'allowance' => 'AllowanceController',
+            'other-allowance' => 'OtherAllowanceController',
         ]);
 
         Route::post('companies/{company_id}/info', 'CompanyController@updateInfo');

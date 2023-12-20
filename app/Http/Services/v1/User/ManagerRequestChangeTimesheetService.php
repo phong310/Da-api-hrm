@@ -71,7 +71,7 @@ class ManagerRequestChangeTimesheetService extends UserBaseService
      */
     public function __construct(
         ModelHasApproversService $modelHasApproversService,
-        // TimeSheetService $timesheetService,
+        TimeSheetService $timesheetService,
         CompanyService $companyService,
         WorkingDayInterface $workingDay,
         NotificationService $notificationService,
@@ -80,7 +80,7 @@ class ManagerRequestChangeTimesheetService extends UserBaseService
         TimeSheetLogInterface $timeSheetLog,
     ) {
         $this->modelHasApproversService = $modelHasApproversService;
-        // $this->timesheetService = $timesheetService;
+        $this->timesheetService = $timesheetService;
         $this->companyService = $companyService;
         $this->workingDay = $workingDay;
         $this->notificationService = $notificationService;

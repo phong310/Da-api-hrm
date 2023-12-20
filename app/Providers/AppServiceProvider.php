@@ -23,9 +23,11 @@ use App\Repositories\Interfaces\LaborContract\AllowanceInterface;
 use App\Repositories\Interfaces\LaborContract\LaborContractAddressInterface;
 use App\Repositories\Interfaces\LaborContract\LaborContractHasAllowanceInterface;
 use App\Repositories\Interfaces\LaborContract\LaborContractInterface;
+use App\Repositories\Interfaces\LaborContract\LaborContractTypeHasAllowanceInterface;
 use App\Repositories\Interfaces\LaborContract\LaborContractTypeInterface;
 use App\Repositories\Interfaces\NotificationInterface;
 use App\Repositories\Interfaces\NumberOfDaysOffInterface;
+use App\Repositories\Interfaces\OtherAllowanceInterface;
 use App\Repositories\Interfaces\OvertimeSalaryCoefficientInterface;
 use App\Repositories\Interfaces\PositionInterface;
 use Illuminate\Support\ServiceProvider;
@@ -45,10 +47,12 @@ use App\Repositories\LaborContract\AllowanceRepository;
 use App\Repositories\LaborContract\LaborContractAddressRepository;
 use App\Repositories\LaborContract\LaborContractHasAllowanceRepository;
 use App\Repositories\LaborContract\LaborContractRepository;
+use App\Repositories\LaborContract\LaborContractTypeHasAllowanceRepository;
 use App\Repositories\LaborContract\LaborContractTypeRepository;
 use App\Repositories\LeaveFormRepository;
 use App\Repositories\NotificationRepository;
 use App\Repositories\NumberOfDaysOffRepository;
+use App\Repositories\OtherAllowanceRepository;
 use App\Repositories\OvertimeRepository;
 use App\Repositories\OvertimeSalaryCoefficientRepository;
 use App\Repositories\PositionRepositiory;
@@ -98,6 +102,8 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(LaborContractTypeInterface::class, LaborContractTypeRepository::class);
         $this->app->bind(SettingSalaryTaxCoefficientInterface::class,SettingSalaryTaxCoefficientRepository::class);
         $this->app->bind(AllowanceInterface::class, AllowanceRepository::class);
+        $this->app->bind(LaborContractTypeHasAllowanceInterface::class, LaborContractTypeHasAllowanceRepository::class);
+        $this->app->bind(OtherAllowanceInterface::class, OtherAllowanceRepository::class);
     }
 
     /**
