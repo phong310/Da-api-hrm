@@ -34,10 +34,10 @@ class TimeSheetService extends BaseService
      *
      * @param SettingLeaveDayInterface $settingLeaveDay
      */
-    public function __construct()
+    public function __construct(SettingLeaveDayInterface $settingLeaveDay, LaborContractTypeInterface $laborContractType)
     {
-        // $this->settingLeaveDay = $settingLeaveDay;
-        // $this->laborContractType = $laborContractType;
+        $this->settingLeaveDay = $settingLeaveDay;
+        $this->laborContractType = $laborContractType;
         parent::__construct();
     }
 
