@@ -65,7 +65,7 @@ class CompanyService extends BaseService
         try {
             DB::beginTransaction();
             $company = $this->query->create($data);
-            // $company->logo = $this->uploadImage($company);
+            $company->logo = $this->uploadImage($company);
             $company->save();
 
             DB::commit();
@@ -172,7 +172,7 @@ class CompanyService extends BaseService
                 $seeder->run();
 
                 $user = User::where('company_id', $id)->first();
-                // $user->notify(new ActiveCompanyNotification());
+                $user->notify(new ActiveCompanyNotification());
             }
 
             DB::commit();
