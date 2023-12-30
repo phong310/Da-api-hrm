@@ -19,4 +19,9 @@ class PositionRepositiory implements PositionInterface
     {
         return $this->position::query()->where('company_id', $company_id)->get();
     }
+
+    public function getArrayByCompany($company_id)
+    {
+        return $this->position::query()->where('company_id', $company_id)->pluck('name')->toArray();
+    }
 }

@@ -160,7 +160,7 @@ class EmployeeService extends UserBaseService
         }
         return $filename;
     }
-
+    
     public function getListByCompany()
     {
         $companyId = $this->getCompanyId();

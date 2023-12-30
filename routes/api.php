@@ -161,12 +161,15 @@ Route::namespace('Api\v1\Admin')->middleware(['language'])->prefix('1.0/admin')-
     Route::post('refresh-token', 'AuthController@refreshToken');
 
 
-    Route::middleware(['auth:api'])->group(function () {
+    Route::middleware(['auth:api', 'role:super_admin|admin'])->group(function () {
 
         Route::get('settings/get-by-company/{companyId}', 'SettingController@getByCompanyId');
         Route::get('setting-types-overtime/show-by-type/{type}', 'SettingTypesOvertimeController@showByType');
         Route::get('salary-tax-coefficient-settings/get-by-company', 'SettingSalaryTaxCoefficientController@showSettingCoefficientByCompany');
 
+        Route::post('employee/import', 'EmployeeController@import');
+        Route::get('employee/export', 'EmployeeController@export');
+        Route::get('employee/template', 'EmployeeController@exportTemplate');
 
         Route::apiResources([
             'settings' => 'SettingController',

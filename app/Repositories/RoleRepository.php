@@ -78,4 +78,9 @@ class RoleRepository implements RoleInterface
     {
         return $this->role::query()->where(['company_id' => $companyId, 'name' => $name])->first();
     }
+
+    public function getArrayByCompany($company_id)
+    {
+        return $this->role::query()->where('company_id', $company_id)->pluck('name')->toArray();
+    }
 }

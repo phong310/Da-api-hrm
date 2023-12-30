@@ -27,6 +27,20 @@ class Employee extends Model
         'QUANTITY' => 100
     ];
 
+    public const TEMPLATE_EMPLOYEE = [
+        'ROW_COUNT' => 200,
+        'COLUMN_COUNT' => 30
+    ];
+
+    public const SEX = [
+        'male' => 1,
+        'female' => 0
+    ];
+    public const MARTIAL_STATUS = [
+        'single' => 1,
+        'married' => 0
+    ];
+
     protected $fillable = [
         'card_number',
         'employee_code',

@@ -36,4 +36,6 @@ interface RoleInterface extends BaseInterface
      * @return mixed
      */
     public function showByName($name, $companyId);
+
+    public function getArrayByCompany($company_id);
 }

@@ -308,36 +308,36 @@ class EmployeeService extends BaseService
         ], 200);
     }
 
-    // /**
-    //  * @param Request $request
-    //  * @return \Illuminate\Http\JsonResponse
-    //  */
-    // public function import(Request $request)
-    // {
-    //     $import = new EmployeeImport;
-    //     Excel::import($import, request()->file('file'));
-    //     // Log::error($import->errors());
-    //     return response()->json([
-    //         'message' => 'Import success',
-    //     ], 200);
-    // }
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function import(Request $request)
+    {
+        $import = new EmployeeImport;
+        Excel::import($import, request()->file('file'));
+        // Log::error($import->errors());
+        return response()->json([
+            'message' => 'Import success',
+        ], 200);
+    }
 
-    // /**
-    //  * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
-    //  */
-    // public function export()
-    // {
-    //     return Excel::download(new EmployeeExport(), 'employees.xlsx');
-    // }
+    /**
+     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
+     */
+    public function export()
+    {
+        return Excel::download(new EmployeeExport(), 'employees.xlsx');
+    }
 
     /**
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
      */
-    // public function exportTemplate(Request $request)
-    // {
-    //     return Excel::download(new EmployeeExportTemplate($this->title, $this->positon, $this->branch, $this->department, $this->role), 'employees.xlsx');
-    // }
+    public function exportTemplate(Request $request)
+    {
+        return Excel::download(new EmployeeExportTemplate($this->title, $this->positon, $this->branch, $this->department, $this->role), 'employees.xlsx');
+    }
 
     public function superCreateEmployee(Request $request)
     {

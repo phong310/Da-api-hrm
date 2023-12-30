@@ -73,32 +73,32 @@ class EmployeeController extends Controller
         return $this->employeeService->destroy($request, $id);
     }
 
-    // /**
-    //  * @param Request $request
-    //  * @return \Illuminate\Http\JsonResponse
-    //  */
-    // public function import(Request $request)
-    // {
-    //     return $this->employeeService->import($request);
-    // }
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function import(Request $request)
+    {
+        return $this->employeeService->import($request);
+    }
 
-    // /**
-    //  * @param Request $request
-    //  * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
-    //  */
-    // public function export(Request $request)
-    // {
-    //     return $this->employeeService->export();
-    // }
+    /**
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
+     */
+    public function export(Request $request)
+    { 
+        return $this->employeeService->export();
+    }
 
-    // /**
-    //  * @param Request $request
-    //  * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
-    //  */
-    // public function exportTemplate(Request $request)
-    // {
-    //     return $this->employeeService->exportTemplate($request);
-    // }
+    /**
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
+     */
+    public function exportTemplate(Request $request)
+    {
+        return $this->employeeService->exportTemplate($request);
+    }
 
     public function superCreateEmployee(CreateEmployeeRequest $request)
     {
