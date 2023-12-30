@@ -171,6 +171,27 @@ Route::namespace('Api\v1\Admin')->middleware(['language'])->prefix('1.0/admin')-
         Route::get('employee/export', 'EmployeeController@export');
         Route::get('employee/template', 'EmployeeController@exportTemplate');
 
+        Route::get('position/all', 'PositionController@all');
+        Route::get('position/export', 'PositionController@export');
+        Route::get('position/template', 'PositionController@exportTemplate');
+        Route::post('position/import', 'PositionController@import');
+
+        Route::get('department/all', 'DepartmentController@all');
+        Route::get('department/export', 'DepartmentController@export');
+        Route::get('department/template', 'DepartmentController@exportTemplate');
+        Route::post('department/import', 'DepartmentController@import');
+
+        Route::get('title/all', 'TitleController@all');
+        Route::get('title/export', 'TitleController@export');
+        Route::get('title/template', 'TitleController@exportTemplate');
+        Route::post('title/import', 'TitleController@import');
+
+        Route::get('branch/all', 'BranchController@all');
+        Route::get('branch/export', 'BranchController@export');
+        Route::get('branch/template', 'BranchController@exportTemplate');
+        Route::post('branch/import', 'BranchController@import');
+
+
         Route::apiResources([
             'settings' => 'SettingController',
             'role' => 'RoleController',

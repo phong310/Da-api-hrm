@@ -42,35 +42,35 @@ class PositionService extends BaseMasterService
         $this->setQuery();
     }
 
-    // /**
-    //  * @param Request $request
-    //  * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
-    //  */
-    // public function export(Request $request)
-    // {
-    //     return Excel::download(new BaseExport(new Position(), ['id', 'name'], $request), 'positions.xlsx');
-    // }
+    /**
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
+     */
+    public function export(Request $request)
+    {
+        return Excel::download(new BaseExport(new Position(), ['id', 'name'], $request), 'positions.xlsx');
+    }
 
-    // /**
-    //  * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
-    //  */
-    // public function exportTemplate()
-    // {
-    //     return Excel::download(new BaseExportTemplate('Position'), 'positions.xlsx');
-    // }
+    /**
+     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
+     */
+    public function exportTemplate()
+    {
+        return Excel::download(new BaseExportTemplate('Position'), 'positions.xlsx');
+    }
 
-    // /**
-    //  * @return \Illuminate\Http\JsonResponse
-    //  */
-    // public function import()
-    // {
-    //     $import = new BaseMasterImport(Position::class);
-    //     Excel::import($import, request()->file('file'));
-    //     // Log::error($import->errors());
-    //     return response()->json([
-    //         'message' => 'Import success',
-    //     ], 200);
-    // }
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function import()
+    {
+        $import = new BaseMasterImport(Position::class);
+        Excel::import($import, request()->file('file'));
+        // Log::error($import->errors());
+        return response()->json([
+            'message' => 'Import success',
+        ], 200);
+    }
 
 
     public function destroy(Request $request, $id, $isForceDelete = false)

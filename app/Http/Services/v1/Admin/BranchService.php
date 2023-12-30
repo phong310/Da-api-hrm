@@ -71,33 +71,33 @@ class BranchService extends BaseMasterService
         }
     }
 
-    // /**
-    //  * @param Request $request
-    //  * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
-    //  */
-    // public function export(Request $request)
-    // {
-    //     return Excel::download(new BaseExport(new Branch(), ['id', 'name'], $request), 'branches.xlsx');
-    // }
+    /**
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
+     */
+    public function export(Request $request)
+    {
+        return Excel::download(new BaseExport(new Branch(), ['id', 'name'], $request), 'branches.xlsx');
+    }
 
-    // /**
-    //  * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
-    //  */
-    // public function exportTemplate()
-    // {
-    //     return Excel::download(new BaseExportTemplate('Branch'), 'branches.xlsx');
-    // }
+    /**
+     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
+     */
+    public function exportTemplate()
+    {
+        return Excel::download(new BaseExportTemplate('Branch'), 'branches.xlsx');
+    }
 
-    // /**
-    //  * @return \Illuminate\Http\JsonResponse
-    //  */
-    // public function import()
-    // {
-    //     $import = new BaseMasterImport(Branch::class);
-    //     Excel::import($import, request()->file('file'));
-    //     // Log::error($import->errors());
-    //     return response()->json([
-    //         'message' => 'Import success',
-    //     ], 200);
-    // }
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function import()
+    {
+        $import = new BaseMasterImport(Branch::class);
+        Excel::import($import, request()->file('file'));
+        // Log::error($import->errors());
+        return response()->json([
+            'message' => 'Import success',
+        ], 200);
+    }
 }

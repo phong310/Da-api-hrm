@@ -19,22 +19,22 @@ class DepartmentService extends BaseMasterService
         $this->model = new Department();
     }
 
-    // /**
-    //  * @param Request $request
-    //  * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
-    //  */
-    // public function export(Request $request)
-    // {
-    //     return Excel::download(new BaseExport(new Department(), ['id', 'name'], $request), 'departments.xlsx');
-    // }
+    /**
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
+     */
+    public function export(Request $request)
+    {
+        return Excel::download(new BaseExport(new Department(), ['id', 'name'], $request), 'departments.xlsx');
+    }
 
-    // /**
-    //  * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
-    //  */
-    // public function exportTemplate()
-    // {
-    //     return Excel::download(new BaseExportTemplate('Department'), 'departments.xlsx');
-    // }
+    /**
+     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
+     */
+    public function exportTemplate()
+    {
+        return Excel::download(new BaseExportTemplate('Department'), 'departments.xlsx');
+    }
 
     /**
      * @param $names
@@ -68,18 +68,18 @@ class DepartmentService extends BaseMasterService
         }
     }
 
-    // /**
-    //  * @return \Illuminate\Http\JsonResponse
-    //  */
-    // public function import()
-    // {
-    //     $import = new BaseMasterImport(Department::class);
-    //     Excel::import($import, request()->file('file'));
-    //     // Log::error($import->errors());
-    //     return response()->json([
-    //         'message' => 'Import success',
-    //     ], 200);
-    // }
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function import()
+    {
+        $import = new BaseMasterImport(Department::class);
+        Excel::import($import, request()->file('file'));
+        // Log::error($import->errors());
+        return response()->json([
+            'message' => 'Import success',
+        ], 200);
+    }
 
     public function getByCompanyId($companyId)
     {
