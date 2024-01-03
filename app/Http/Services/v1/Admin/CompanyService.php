@@ -17,6 +17,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
+use Cloudinary\Api\Upload\UploadApi;
+use Cloudinary\Exceptions\ApiError;
 
 class CompanyService extends BaseService
 {
@@ -108,24 +110,63 @@ class CompanyService extends BaseService
      * @param $company
      * @return bool
      */
+    // public function uploadImage($company)
+    // {
+    //     $filename = $company->logo;
+    //     $folder_name = '/companies/' . $company->id . '/logos';
+    //     if (request()->hasFile('logo')) {
+    //         if ($filename !== null) {
+    //             Storage::disk('public')->delete($filename);
+    //         }
+
+    //         // Storage::disk('public')->delete($filename);
+    //         $logo = $this->request->file('logo');
+    //         $filename = Storage::disk('public')->put(
+    //             $folder_name,
+    //             $logo
+    //         );
+    //     }
+
+    //     return $filename;
+    // }
     public function uploadImage($company)
     {
-        $filename = $company->logo;
         $folder_name = '/companies/' . $company->id . '/logos';
+
         if (request()->hasFile('logo')) {
-            if ($filename !== null) {
-                Storage::disk('public')->delete($filename);
+            $logo = $this->request->file('logo');
+
+            // Tải ảnh lên Cloudinary
+            try {
+                $uploadApi = new UploadApi([
+                    'cloud_name' => config('services.cloudinary.cloud_name'),
+                    'api_key' => config('services.cloudinary.api_key'),
+                    'api_secret' => config('services.cloudinary.api_secret'),
+                ]);
+
+                // Lấy đường dẫn tệp từ đối tượng UploadedFile
+                $logoPath = $logo->getPathname();
+                $uploaded = $uploadApi->upload($logoPath, [
+                    'folder' => $folder_name,
+                    'resource_type' => 'auto', // Kiểu tệp (auto: tự động xác định)
+                ]);
+
+                // Lấy URL của ảnh đã tải lên Cloudinary và gán vào biến $logoUrl
+                $logoUrl = $uploaded['secure_url'];
+
+            } catch (ApiError $e) {
+                Log::error($e->getMessage());
+                return null;
             }
 
-            // Storage::disk('public')->delete($filename);
-            $logo = $this->request->file('logo');
-            $filename = Storage::disk('public')->put(
-                $folder_name,
-                $logo
-            );
+            // Lưu URL của ảnh vào cơ sở dữ liệu
+            $company->logo = $logoUrl;
+            $company->save();
+
+            return $logoUrl;
         }
 
-        return $filename;
+        return null;
     }
 
     public function updateInfo(Request $request, $company_id)

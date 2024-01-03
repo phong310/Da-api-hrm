@@ -12,7 +12,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
-use Maatwebsite\Excel\Facades\Excel;
+use Cloudinary\Api\Upload\UploadApi;
+use Cloudinary\Exceptions\ApiError;
 
 class EmployeeService extends UserBaseService
 {
@@ -146,19 +147,51 @@ class EmployeeService extends UserBaseService
     }
 
 
-    public function uploadImage($employee_id, $avatar)
+    // public function uploadImage($employee_id, $avatar)
+    // {
+    //     $filename = $avatar;
+    //     $folder_name = 'profile/' . $employee_id . '/avatar';
+    //     if (request()->hasFile('avatar')) {
+    //         Storage::disk('public')->delete($filename);
+    //         $avatar = $this->request->file('avatar');
+    //         $filename = Storage::disk('public')->put(
+    //             $folder_name,
+    //             $avatar
+    //         );
+    //     }
+    //     return $filename;
+    // }
+
+    public function uploadImage($employee_id, $avatar) 
     {
         $filename = $avatar;
         $folder_name = 'profile/' . $employee_id . '/avatar';
-        if (request()->hasFile('avatar')) {
-            Storage::disk('public')->delete($filename);
-            $avatar = $this->request->file('avatar');
-            $filename = Storage::disk('public')->put(
-                $folder_name,
-                $avatar
-            );
-        }
-        return $filename;
+
+        if(request()->hasFile(('avatar'))) {
+            $main_ava = $this->request->file('avatar');
+
+            try {
+                $uploadApi = new UploadApi([
+                    'cloud_name' => config('services.cloudinary.cloud_name'),
+                    'api_key' => config('services.cloudinary.api_key'),
+                    'api_secret' => config('services.cloudinary.api_secret'),
+                ]);
+
+                // Lấy đường dẫn tệp từ đối tượng UploadedFile
+                $logoPath = $main_ava->getPathname();
+                $uploaded = $uploadApi->upload($logoPath, [
+                    'folder' => $folder_name,
+                    'resource_type' => 'auto', // Kiểu tệp (auto: tự động xác định)
+                ]);
+
+                return $uploaded['secure_url'];
+
+            } catch (ApiError $e) {
+                Log::error($e->getMessage());
+                return null;
+            }   
+         }
+         return null;
     }
     
     public function getListByCompany()
